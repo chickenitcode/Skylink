@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: skylink-postgres-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-skylink_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-skylink_dev_password_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-skylink_db}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-skylink_admin} -d ${POSTGRES_DB:-skylink_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - skylink-net
+
+  pdf-worker:
+    build:
+      context: .
+      dockerfile: ./resources/libreoffice_worker_dockerfile
+    container_name: skylink-pdf-worker
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      LIBREOFFICE_TIMEOUT_MS: 30000
+    volumes:
+      - shared_tmp:/tmp/skylink_docs
+    networks:
+      - skylink-net
+
+volumes:
+  pgdata:
+  shared_tmp:
+
+networks:
+  skylink-net:
+    driver: bridge

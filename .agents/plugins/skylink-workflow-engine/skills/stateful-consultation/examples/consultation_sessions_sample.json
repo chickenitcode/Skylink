@@ -1,0 +1,29 @@
+{
+  "session_id": "SESS-2026-S0112-998",
+  "created_at": "2026-10-05T08:30:00Z",
+  "updated_at": "2026-10-05T08:35:12Z",
+  "actor_id": "USR-SALES-01",
+  "current_state": "SERVICE_RECOMMENDED",
+  "domain_profile": "DRONE_SURVEY",
+  "requirements": {
+    "problem": "Phát hiện nấm bệnh rỉ sắt trên lá cây cà phê tại vùng đồi dốc",
+    "objective": "Khoanh vùng chính xác điểm nhiễm bệnh để phun thuốc khoanh vùng, giảm chi phí hóa chất",
+    "deployment_context": "Khu vực địa hình đồi dốc độ nghiêng 25 độ, diện tích 500ha tại Di Linh, Lâm Đồng",
+    "timeline_expectation": "Cần hoàn thành khảo sát trong tháng 11/2026",
+    "scale": "500ha",
+    "constraints": ["Gió chiều hay giật cấp 4", "Không bay quá độ cao 150m"]
+  },
+  "candidate_services": [
+    {
+      "service_id": "S0112",
+      "service_name": "Dịch Vụ Bay Quét & Phân Tích Chỉ Số Thực Vật NDVI",
+      "suitability_level": "HIGH",
+      "rationale": "Dịch vụ S0112 hoàn toàn đáp ứng khả năng bay quét địa hình dốc tới 30 độ và diện tích 500ha trong 1 ca làm việc.",
+      "evidence_chunk_ids": ["CHK-S0112-CAPA-01", "CHK-S0112-COND-01"]
+    }
+  ],
+  "items_to_confirm": [
+    "Khảo sát địa hình thực tế để đặt trạm phát sóng RTK điều khiển máy bay",
+    "Xin giấy phép bay từ Cơ quan Quản lý Không phận Quân khu 7"
+  ]
+}

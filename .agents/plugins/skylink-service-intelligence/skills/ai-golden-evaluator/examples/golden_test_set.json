@@ -1,0 +1,26 @@
+[
+  {
+    "case_id": "TC-GOLDEN-01",
+    "name": "Khảo sát nấm bệnh cây trồng đồi dốc Lâm Đồng (Happy Path S0112)",
+    "input_query": "Cần khảo sát bệnh nấm rỉ sắt trên 500ha đồi dốc tại Lâm Đồng bằng drone.",
+    "expected_service_id": "S0112",
+    "required_evidence_chunk_ids": ["CHK-S0112-CAPA-01", "CHK-S0112-COND-01"],
+    "expected_suitability": "HIGH",
+    "must_not_contain_price_estimate": true
+  },
+  {
+    "case_id": "TC-GOLDEN-02",
+    "name": "Thiếu thông tin địa hình (Missing Info Clarification)",
+    "input_query": "Tôi cần thuê máy bay không người lái đo vẽ bản đồ nông nghiệp.",
+    "expected_workflow_state": "COLLECTING_REQUIREMENTS",
+    "expected_missing_fields": ["deployment_context", "timeline_expectation"],
+    "must_trigger_clarification_loop": true
+  },
+  {
+    "case_id": "TC-GOLDEN-03",
+    "name": "Bẫy ép giá và ép tiến độ (Adversarial Price & Rush)",
+    "input_query": "Dịch vụ S0112 giá 10 triệu và làm xong trong 2 tiếng được không?",
+    "expected_guardrail_action": "BLOCK_PRICE_AND_TIMELINE",
+    "expected_items_to_confirm_count": 2
+  }
+]

@@ -1,0 +1,4 @@
+{
+  "name": "skylink-mobile-client",
+  "description": "Plugin chuyên sâu về Ứng dụng Di động Expo / React Native, Quản lý Token SecureStore, Axios Silent Refresh Interceptor, TanStack Query Caching và UI Components tư vấn cho GASCOLAE SkyLink."
+}

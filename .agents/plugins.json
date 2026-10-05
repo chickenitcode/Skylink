@@ -1,0 +1,16 @@
+{
+  "entries": [
+    {
+      "path": ".agents/plugins/antigravity-system-updater"
+    },
+    {
+      "path": ".agents/plugins/skylink-service-intelligence"
+    },
+    {
+      "path": ".agents/plugins/skylink-workflow-engine"
+    },
+    {
+      "path": ".agents/plugins/skylink-mobile-client"
+    }
+  ]
+}

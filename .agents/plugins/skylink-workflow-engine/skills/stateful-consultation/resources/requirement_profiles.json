@@ -1,0 +1,33 @@
+{
+  "profiles": {
+    "DRONE_SURVEY": {
+      "name": "Khảo Sát Viễn Thám & Lập Bản Đồ Drone",
+      "required_fields": [
+        { "key": "problem", "min_length": 10, "label": "Vấn đề khách hàng gặp phải" },
+        { "key": "objective", "min_length": 5, "label": "Mục tiêu khảo sát giải pháp" },
+        { "key": "deployment_context", "min_length": 3, "label": "Bối cảnh địa hình & diện tích (ha)" },
+        { "key": "timeline_expectation", "min_length": 2, "label": "Thời gian mong muốn triển khai" }
+      ],
+      "optional_fields": ["budget_range", "constraints", "resolution_gsd_requirement"]
+    },
+    "AGRICULTURAL_SPRAY": {
+      "name": "Phun Thuốc Bảo Vệ Thực Vật Chính Xác",
+      "required_fields": [
+        { "key": "problem", "min_length": 10, "label": "Loại dịch bệnh hoặc sâu hại" },
+        { "key": "crop_type", "min_length": 3, "label": "Loại cây trồng (lúa, cà phê, sầu riêng)" },
+        { "key": "scale", "min_length": 2, "label": "Diện tích cần phun (ha)" },
+        { "key": "water_source_availability", "min_length": 3, "label": "Nguồn nước tại hiện trường" }
+      ],
+      "optional_fields": ["chemical_type", "deployment_time_of_day"]
+    },
+    "AI_ANALYTICS": {
+      "name": "Xử Lý Dữ Liệu & Phân Tích Hình Ảnh AI",
+      "required_fields": [
+        { "key": "input_data_format", "min_length": 3, "label": "Định dạng dữ liệu đầu vào (GeoTIFF, JPG)" },
+        { "key": "analysis_objective", "min_length": 5, "label": "Mục tiêu phân tích (đếm cây, tính NDVI)" },
+        { "key": "turnaround_time", "min_length": 2, "label": "Thời hạn yêu cầu trả kết quả" }
+      ],
+      "optional_fields": ["cloud_storage_provider", "api_integration_required"]
+    }
+  }
+}

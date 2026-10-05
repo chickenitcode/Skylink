@@ -1,0 +1,41 @@
+{
+  "theme_name": "GASCOLAE_SKYLINK_MOBILE_DESIGN_TOKENS",
+  "version": "1.0.0",
+  "colors": {
+    "brand_primary": "#1E3A8A",
+    "brand_secondary": "#0284C7",
+    "brand_accent": "#0D9488",
+    "status_verified": "#10B981",
+    "status_warning": "#F59E0B",
+    "status_danger": "#EF4444",
+    "background_screen": "#F9FAFB",
+    "background_card": "#FFFFFF",
+    "border_subtle": "#E5E7EB",
+    "text_primary": "#111827",
+    "text_secondary": "#4B5563",
+    "text_muted": "#9CA3AF"
+  },
+  "typography": {
+    "font_family_regular": "Roboto-Regular",
+    "font_family_medium": "Roboto-Medium",
+    "font_family_bold": "Roboto-Bold",
+    "size_display": 24,
+    "size_h1": 20,
+    "size_h2": 16,
+    "size_body": 14,
+    "size_caption": 12
+  },
+  "spacing": {
+    "xs": 4,
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 24
+  },
+  "border_radius": {
+    "sm": 4,
+    "md": 8,
+    "lg": 12,
+    "pill": 9999
+  }
+}

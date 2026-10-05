@@ -1,0 +1,45 @@
+{
+  "scenario_name": "Diễn tập 10 phút demo không lỗi dịch vụ S0112",
+  "total_duration_minutes": 10,
+  "timeline_steps": [
+    {
+      "minute_range": "00:00 - 01:30",
+      "action": "Đăng nhập Sales và khởi tạo phiên tư vấn",
+      "account": "sales@gascolae.internal",
+      "screen": "Màn hình Chat tư vấn",
+      "expected_system_feedback": "Thanh tiến độ nhu cầu hiển thị 2/4 (Thiếu địa hình và thời gian)"
+    },
+    {
+      "minute_range": "01:30 - 03:00",
+      "action": "Sales bổ sung thông tin thiếu vào form clarification",
+      "input_text": "Khu vực đồi dốc khoảng 500ha tại Lâm Đồng, cần triển khai trong tháng 11/2026",
+      "screen": "Form nhập liệu trường thiếu",
+      "expected_system_feedback": "Thanh tiến độ nhảy 4/4 và mở khóa nút 'Bắt đầu khớp dịch vụ'"
+    },
+    {
+      "minute_range": "03:00 - 05:00",
+      "action": "Xem kết quả đề xuất dịch vụ S0112 và dẫn chứng",
+      "screen": "Card dịch vụ và BottomSheet Evidence Drawer",
+      "expected_system_feedback": "Hiển thị Badge 'Tương thích cao', trích dẫn nguồn SRC-VN-CAAV-2024"
+    },
+    {
+      "minute_range": "05:00 - 07:00",
+      "action": "Tạo bản thảo đề xuất Proposal Draft",
+      "screen": "Xem trước Proposal JSON",
+      "expected_system_feedback": "Có Watermark 'BẢN THẢO SƠ BỘ', mục items_to_confirm cách ly số liệu chưa kiểm chứng"
+    },
+    {
+      "minute_range": "07:00 - 09:00",
+      "action": "Đăng nhập tài khoản Reviewer và bấm phê duyệt",
+      "account": "reviewer@gascolae.internal",
+      "screen": "Màn hình Danh sách duyệt Proposal",
+      "expected_system_feedback": "Kiểm toán 0 vi phạm Guardrail -> Bấm Approve -> Chuyển sang APPROVED"
+    },
+    {
+      "minute_range": "09:00 - 10:00",
+      "action": "Tải và mở file PDF chính thức",
+      "screen": "In-app PDF Viewer",
+      "expected_system_feedback": "Mở tệp PDF đóng dấu chính thức không lỗi font chữ"
+    }
+  ]
+}

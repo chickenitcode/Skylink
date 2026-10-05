@@ -1,0 +1,29 @@
+{
+  "default_profile": "balanced",
+  "profiles": {
+    "balanced": {
+      "description": "Cân bằng tiêu chuẩn giữa khớp từ khóa FTS và vector ngữ nghĩa (Khuyên dùng cho luồng tư vấn thông thường)",
+      "rrf_k": 60,
+      "fts_weight": 1.0,
+      "vector_weight": 1.0,
+      "candidate_limit": 25,
+      "top_k": 5
+    },
+    "keyword_precision": {
+      "description": "Ưu tiên cao từ khóa chính xác (Dùng khi Sales tìm mã hiệu service, mã cảm biến, thông số kỹ thuật)",
+      "rrf_k": 60,
+      "fts_weight": 1.6,
+      "vector_weight": 0.8,
+      "candidate_limit": 30,
+      "top_k": 5
+    },
+    "semantic_discovery": {
+      "description": "Ưu tiên cao ngữ nghĩa và từ đồng nghĩa (Dùng khi khách hàng mô tả bài toán mơ hồ bằng ngôn từ dân dã)",
+      "rrf_k": 50,
+      "fts_weight": 0.7,
+      "vector_weight": 1.5,
+      "candidate_limit": 25,
+      "top_k": 7
+    }
+  }
+}

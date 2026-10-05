@@ -1,0 +1,4 @@
+{
+  "name": "skylink-workflow-engine",
+  "description": "Plugin chuyên sâu về Quản trị Máy trạng thái tư vấn (Stateful Consultation), Sinh tài liệu Proposal DOCX/PDF qua docxtemplater & headless LibreOffice, Hạ tầng Docker pgvector và Kiểm toán RBAC Audit Trail cho GASCOLAE SkyLink."
+}

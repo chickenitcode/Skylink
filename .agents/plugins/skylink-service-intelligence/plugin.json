@@ -1,0 +1,4 @@
+{
+  "name": "skylink-service-intelligence",
+  "description": "Plugin chuyên sâu về Trí tuệ Dịch vụ, Chuẩn hóa Canonical 5 cấp, Semantic Chunking, Hybrid Retrieval (FTS + pgvector Cosine RRF), 2 tầng Guardrails chống ảo giác và Đo lường AI Golden Set cho GASCOLAE SkyLink."
+}

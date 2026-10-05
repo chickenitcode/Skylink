@@ -1,0 +1,47 @@
+{
+  "chunking_strategy": "SCHEMA_AWARE_SEMANTIC",
+  "min_tokens_threshold": 80,
+  "max_tokens_threshold": 600,
+  "record_type_templates": {
+    "overview": {
+      "prefix": "TỔNG QUAN DỊCH VỤ",
+      "required_metadata": ["service_id", "domain", "status"],
+      "recommended_chunk_size": 250
+    },
+    "customer_problem": {
+      "prefix": "VẤN ĐỀ VÀ THÁCH THỨC CỦA KHÁCH HÀNG",
+      "required_metadata": ["service_id", "severity", "target_industry"],
+      "recommended_chunk_size": 300
+    },
+    "capability": {
+      "prefix": "NĂNG LỰC KỸ THUẬT VÀ THIẾT BỊ TRIỂN KHAI",
+      "required_metadata": ["service_id", "hardware_specs", "sensor_types"],
+      "recommended_chunk_size": 350
+    },
+    "use_case": {
+      "prefix": "TÌNH HUỐNG ỨNG DỤNG THỰC TẾ",
+      "required_metadata": ["service_id", "industry", "scale"],
+      "recommended_chunk_size": 300
+    },
+    "service_level": {
+      "prefix": "CAM KẾT CHẤT LƯỢNG VÀ TIẾN ĐỘ (SLA)",
+      "required_metadata": ["service_id", "sla_hours", "resolution_gsd"],
+      "recommended_chunk_size": 200
+    },
+    "deliverable": {
+      "prefix": "SẢN PHẨM VÀ BÁO CÁO BÀN GIAO",
+      "required_metadata": ["service_id", "format", "delivery_channel"],
+      "recommended_chunk_size": 250
+    },
+    "condition": {
+      "prefix": "ĐIỀU KIỆN ĐỊA HÌNH VÀ PHÁP LÝ TRIỂN KHAI",
+      "required_metadata": ["service_id", "max_slope", "max_wind", "permit_required"],
+      "recommended_chunk_size": 250
+    },
+    "faq_and_gap": {
+      "prefix": "CÂU HỎI THƯỜNG GẶP VÀ KHOẢNG TRỐNG KHẢO SÁT",
+      "required_metadata": ["service_id", "clarification_focus"],
+      "recommended_chunk_size": 300
+    }
+  }
+}

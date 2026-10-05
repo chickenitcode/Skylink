@@ -1,0 +1,67 @@
+{
+  "service_id": "S0112",
+  "service_name": "Dịch Vụ Bay Quét & Phân Tích Chỉ Số Thực Vật NDVI",
+  "service_code": "DRONE-AGRI-NDVI-01",
+  "domain": "AGRICULTURE_FORESTRY",
+  "status": "verified",
+  "visibility": "public",
+  "version": 1,
+  "assets": [
+    {
+      "asset_code": "ASSET_SPEC_01",
+      "asset_name": "Đặc Tả Kỹ Thuật Máy Bay & Cảm Biến Đa Phổ",
+      "records": [
+        {
+          "record_type": "capability",
+          "title": "Năng Lực Khảo Sát Đa Phổ",
+          "content": "Sử dụng máy bay không người lái cánh bằng kết hợp cảm biến đa phổ RedEdge-P 5 dải sóng (Blue, Green, Red, RedEdge, NIR). Độ phân giải không gian đạt GSD 3.5cm/pixel tại độ cao bay 120m. Khả năng bao phủ diện tích quét lên tới 500ha trong 1 ca làm việc.",
+          "source_ids": ["SRC-TECH-SPEC-S0112"],
+          "visibility": "public",
+          "status": "verified"
+        },
+        {
+          "record_type": "condition",
+          "title": "Giới Hạn Khai Thác Địa Hình & Thời Tiết",
+          "content": "Khu vực quét đồi dốc tối đa 30 độ. Không triển khai bay khi sức gió vượt quá cấp 5 (>10.7 m/s) hoặc trời có mưa phùn/độ ẩm không khí trên 90%. Bắt buộc có giấy phép bay từ Cơ quan Quản lý Không phận Quân khu sở tại.",
+          "source_ids": ["SRC-VN-CAAV-2024", "SRC-TECH-SPEC-S0112"],
+          "visibility": "internal",
+          "status": "verified"
+        }
+      ]
+    },
+    {
+      "asset_code": "ASSET_SLA_02",
+      "asset_name": "Quy Trình Xử Lý & Cam Kết Bàn Giao",
+      "records": [
+        {
+          "record_type": "service_level",
+          "title": "Thời Gian Xử Lý Ảnh & Xuất Bản Đồ",
+          "content": "Bàn giao bản đồ trực giao Orthomosaic và bản đồ chỉ số thực vật NDVI sơ bộ trong vòng 24 giờ kể từ khi kết thúc chuyến bay. Báo cáo đánh giá mức độ nhiễm nấm bệnh chi tiết kèm khuyến nghị phân bón hoàn thành trong vòng 48 giờ.",
+          "source_ids": ["SRC-SLA-AGRI-2025"],
+          "visibility": "public",
+          "status": "verified"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "SRC-TECH-SPEC-S0112",
+      "title": "Đặc tả kỹ thuật thiết bị viễn thám nông nghiệp S0112",
+      "author": "GASCOLAE Technical Committee",
+      "verified_date": "2026-01-15"
+    },
+    {
+      "source_id": "SRC-VN-CAAV-2024",
+      "title": "Quy chế cấp phép và an toàn bay thiết bị không người lái tại Việt Nam",
+      "author": "Cục Hàng Không Dân Dụng Việt Nam",
+      "verified_date": "2024-11-20"
+    },
+    {
+      "source_id": "SRC-SLA-AGRI-2025",
+      "title": "Cam kết chất lượng dịch vụ nông nghiệp chính xác GASCOLAE",
+      "author": "GASCOLAE Operations",
+      "verified_date": "2025-06-10"
+    }
+  ]
+}

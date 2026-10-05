@@ -1,0 +1,60 @@
+{
+  "system_roles": ["SALES", "REVIEWER", "ADMIN"],
+  "permissions": [
+    {
+      "code": "SERVICE_VIEW",
+      "description": "Xem danh mục và chi tiết dịch vụ Public/Internal",
+      "granted_to": ["SALES", "REVIEWER", "ADMIN"]
+    },
+    {
+      "code": "SERVICE_VIEW_RESTRICTED",
+      "description": "Xem tài liệu bí mật nội bộ và căn cứ pháp lý nhạy cảm",
+      "granted_to": ["REVIEWER", "ADMIN"]
+    },
+    {
+      "code": "CONSULTATION_CREATE",
+      "description": "Khởi tạo phiên tư vấn và gửi tin nhắn trích xuất nhu cầu",
+      "granted_to": ["SALES", "REVIEWER", "ADMIN"]
+    },
+    {
+      "code": "CONSULTATION_RESUME",
+      "description": "Xem lại và tiếp tục phiên tư vấn dở dang",
+      "granted_to": ["SALES", "REVIEWER", "ADMIN"]
+    },
+    {
+      "code": "PROPOSAL_CREATE_DRAFT",
+      "description": "Yêu cầu hệ thống sinh bản thảo đề xuất JSON",
+      "granted_to": ["SALES", "REVIEWER", "ADMIN"]
+    },
+    {
+      "code": "PROPOSAL_VIEW_OWN",
+      "description": "Xem danh sách và chi tiết các bản Proposal do chính mình lập",
+      "granted_to": ["SALES", "REVIEWER", "ADMIN"]
+    },
+    {
+      "code": "PROPOSAL_VIEW_ALL",
+      "description": "Xem toàn bộ Proposal trong hệ thống",
+      "granted_to": ["REVIEWER", "ADMIN"]
+    },
+    {
+      "code": "PROPOSAL_APPROVE",
+      "description": "Phê duyệt chính thức hoặc yêu cầu chỉnh sửa Proposal",
+      "granted_to": ["REVIEWER", "ADMIN"]
+    },
+    {
+      "code": "PROPOSAL_DOWNLOAD_PDF",
+      "description": "Tải về tệp PDF chính thức đã được phê duyệt",
+      "granted_to": ["SALES", "REVIEWER", "ADMIN"]
+    },
+    {
+      "code": "KNOWLEDGE_INGEST",
+      "description": "Nạp mới hoặc cập nhật Service Assets và đánh chỉ mục vector",
+      "granted_to": ["ADMIN"]
+    },
+    {
+      "code": "AUDIT_VIEW",
+      "description": "Tra cứu nhật ký kiểm toán và báo cáo vi phạm Guardrail",
+      "granted_to": ["ADMIN"]
+    }
+  ]
+}

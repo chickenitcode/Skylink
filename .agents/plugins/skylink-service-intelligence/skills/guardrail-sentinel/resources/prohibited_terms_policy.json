@@ -1,0 +1,35 @@
+{
+  "policy_name": "GASCOLAE_SKYLINK_GUARDRAIL_POLICY",
+  "version": "1.0.0",
+  "last_updated": "2026-10-05",
+  "rules": {
+    "price_enforcement": {
+      "enabled": true,
+      "description": "Chặn mọi tuyên bố số tiền cụ thể nếu không có trong approved evidence chunk",
+      "regex_patterns": [
+        "(\\b\\d+[\\.,]?\\d*\\s*(vnđ|vnd|triệu|ngàn|nghìn|k|usd|\\$)\\b)",
+        "(chiết\\s*khấu\\s*\\d+%)",
+        "(giảm\\s*giá\\s*\\d+%)"
+      ],
+      "action_on_match": "MOVE_TO_ITEMS_TO_CONFIRM"
+    },
+    "absolute_commitment_enforcement": {
+      "enabled": true,
+      "description": "Chặn các từ ngữ cam kết tuyệt đối vi phạm miễn trừ pháp lý sơ bộ",
+      "prohibited_phrases": [
+        "cam kết 100%",
+        "chính xác 100%",
+        "hoàn tiền 100%",
+        "chắc chắn thành công",
+        "không có rủi ro",
+        "miễn trừ hoàn toàn trách nhiệm"
+      ],
+      "action_on_match": "REJECT_AND_REPHRASE"
+    },
+    "visibility_enforcement": {
+      "sales_role_blocked_visibilities": ["restricted"],
+      "reviewer_role_allowed_visibilities": ["public", "internal", "restricted"],
+      "admin_role_allowed_visibilities": ["public", "internal", "restricted"]
+    }
+  }
+}

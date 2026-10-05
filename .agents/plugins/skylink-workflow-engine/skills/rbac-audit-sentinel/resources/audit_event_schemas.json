@@ -1,0 +1,20 @@
+{
+  "event_schemas": {
+    "STATE_TRANSITION": {
+      "required_fields": ["from_state", "to_state", "actor_id", "session_id"],
+      "optional_fields": ["trigger_message", "validation_duration_ms"]
+    },
+    "RETRIEVAL_TRACE": {
+      "required_fields": ["query_text", "retrieved_chunk_ids", "search_latency_ms"],
+      "optional_fields": ["rrf_k", "fts_candidates_count", "vector_candidates_count"]
+    },
+    "GUARDRAIL_VIOLATION": {
+      "required_fields": ["violation_type", "trigger_text", "blocked_reason", "actor_id"],
+      "optional_fields": ["attempted_price", "unsupported_claim"]
+    },
+    "PROPOSAL_EVENT": {
+      "required_fields": ["action", "proposal_id", "actor_id", "new_status"],
+      "optional_fields": ["reviewer_note", "pdf_file_size_bytes"]
+    }
+  }
+}

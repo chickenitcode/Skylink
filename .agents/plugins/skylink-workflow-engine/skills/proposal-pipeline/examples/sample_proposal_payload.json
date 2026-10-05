@@ -1,0 +1,43 @@
+{
+  "proposal_code": "PROP-S0112-2026-001",
+  "version": 1,
+  "status": "APPROVED",
+  "created_at": "2026-10-05T09:00:00Z",
+  "client_info": {
+    "client_name": "Hợp Tác Xã Nông Nghiệp Công Nghệ Cao Di Linh",
+    "contact_person": "Ông Trần Văn Bình",
+    "phone": "0987654321",
+    "address": "Di Linh, Lâm Đồng"
+  },
+  "selected_service": {
+    "service_id": "S0112",
+    "service_name": "Dịch Vụ Bay Quét & Phân Tích Chỉ Số Thực Vật NDVI",
+    "domain": "AGRICULTURE_FORESTRY"
+  },
+  "executive_summary": "Giải pháp ứng dụng thiết bị bay không người lái cánh bằng trang bị cảm biến đa phổ RedEdge-P nhằm khảo sát, lập bản đồ và phát hiện sớm ổ nấm bệnh rỉ sắt trên 500ha đồi dốc tại Di Linh, Lâm Đồng.",
+  "scope_of_work": {
+    "flight_area_ha": 500,
+    "terrain_type": "Đồi dốc tối đa 25 độ",
+    "target_resolution_gsd": "3.5 cm/pixel",
+    "deliverables": [
+      "Bản đồ trực giao độ phân giải cao Orthomosaic (GeoTIFF)",
+      "Bản đồ phân bố chỉ số thực vật NDVI (GeoTIFF & PDF)",
+      "Báo cáo khoanh vùng ổ dịch nấm bệnh và khuyến nghị phân bón/thuốc BVTV"
+    ]
+  },
+  "timeline_and_sla": {
+    "flight_duration_days": "2 ngày bay khảo sát hiện trường",
+    "data_processing_hours": 24,
+    "final_report_hours": 48
+  },
+  "pricing_structure": {
+    "pricing_model": "Đơn giá theo hecta kết hợp khảo sát địa hình",
+    "preliminary_note": "Mức giá chính thức sẽ được phê duyệt sau khi tiến hành đo đạc trạm điều khiển mặt đất."
+  },
+  "items_to_confirm": [
+    "Khảo sát địa hình thực tế tại 500ha đồi dốc để đặt trạm phát sóng RTK",
+    "Thẩm định diện tích và thỏa thuận phương án giá chi tiết",
+    "Xin giấy phép bay từ cơ quan chức năng địa phương"
+  ],
+  "legal_disclaimer": "Tài liệu này là bản thảo đề xuất kỹ thuật sơ bộ do Nền tảng Trợ lý Nội bộ GASCOLAE SkyLink hỗ trợ lập dựa trên thông số nhu cầu ban đầu do khách hàng cung cấp và tri thức dịch vụ đã được chuẩn hóa. Tài liệu này KHÔNG CẤU THÀNH một báo giá thương mại ràng buộc, hợp đồng cung ứng dịch vụ, hay cam kết pháp lý cuối cùng giữa GASCOLAE Platform và Quý Khách hàng. Toàn bộ các thông số kỹ thuật, tiến độ triển khai thực tế, phương án giá và các điều kiện nghiệm thu phải trải qua quy trình khảo sát hiện trường chuyên sâu và được phê duyệt chính thức bằng văn bản bởi đại diện có thẩm quyền của GASCOLAE."
+}

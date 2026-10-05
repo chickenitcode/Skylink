@@ -1,0 +1,11 @@
+{
+  "guardrail-reminder": {
+    "enabled": true,
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "powershell.exe -ExecutionPolicy Bypass -File scripts/guardrail_reminder.ps1"
+      }
+    ]
+  }
+}

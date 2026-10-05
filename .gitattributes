@@ -1,0 +1,93 @@
+# ==============================================================================
+# GASCOLAE SKYLINK - GIT ATTRIBUTES CONFIGURATION
+# Cross-Platform Support: Windows (PowerShell) & Ubuntu / Linux (Bash)
+# ==============================================================================
+
+# 1. QUY CHUẨN TỰ ĐỘNG CHUẨN HÓA KẾT THÚC DÒNG (LINE ENDING NORMALIZATION)
+# Tự động nhận diện file text và chuẩn hóa line ending thành LF khi commit vào Git repo
+# Giúp loại bỏ 100% tình trạng "dirty diff" (toàn bộ file bị báo sửa do CRLF vs LF) giữa Windows và Ubuntu.
+* text=auto eol=lf
+
+# 2. SOURCE CODE & MARKDOWN FILES (BẮT BUỘC LF)
+*.ts text eol=lf
+*.tsx text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.mjs text eol=lf
+*.cjs text eol=lf
+*.json text eol=lf
+*.json5 text eol=lf
+*.jsonc text eol=lf
+*.md text eol=lf
+*.mdx text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.sql text eol=lf
+*.prisma text eol=lf
+*.graphql text eol=lf
+*.gql text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.toml text eol=lf
+*.ini text eol=lf
+*.env* text eol=lf
+
+# 3. DOCKER & CONTAINER CONFIGS (BẮT BUỘC LF - CRLF SẼ LÀM CRASH DOCKER BUILD TRÊN UBUNTU)
+Dockerfile* text eol=lf
+docker-compose* text eol=lf
+.dockerignore text eol=lf
+
+# 4. SHELL SCRIPTS (BẮT BUỘC LF - TUYỆT ĐỐI KHÔNG ĐƯỢC DÙNG CRLF)
+# Lưu ý: Shell script có ký tự CRLF (\r\n) sẽ báo lỗi "/bin/bash^M: bad interpreter" trên Ubuntu/Linux!
+*.sh text eol=lf
+*.bash text eol=lf
+*.zsh text eol=lf
+
+# 5. WINDOWS SCRIPTS (PowerShell & Batch)
+# PowerShell trên Windows hỗ trợ cả CRLF và LF, giữ CRLF cho Batch để tương thích cổ điển
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# 6. BINARY FILES (BẢO VỆ TỆP NHỊ PHÂN - CẤM GIT SỬA ĐỔI LINE ENDING HOẶC DỮ LIỆU)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.svg text eol=lf
+
+# Tài liệu mẫu & báo cáo
+*.pdf binary
+*.docx binary
+*.doc binary
+*.xlsx binary
+*.xls binary
+*.pptx binary
+*.ppt binary
+
+# Lưu trữ nén & font chữ
+*.zip binary
+*.tar.gz binary
+*.tgz binary
+*.gz binary
+*.rar binary
+*.7z binary
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
+*.eot binary
+
+# Binary thực thi & khóa mã hóa
+*.exe binary
+*.bin binary
+*.dll binary
+*.so binary
+*.dylib binary
+*.keystore binary
+*.jks binary
+*.p12 binary
+*.p8 binary

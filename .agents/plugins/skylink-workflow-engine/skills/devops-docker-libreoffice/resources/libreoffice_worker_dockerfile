@@ -1,0 +1,32 @@
+# ==============================================================================
+# DOCKERFILE CHO WORKER LIBREOFFICE HEADLESS & NODE.JS RUNTIME
+# Tối ưu hóa font tiếng Việt Unicode và chống rò rỉ bộ nhớ
+# ==============================================================================
+
+FROM node:20-alpine
+
+# Cài đặt LibreOffice và bộ font tiếng Việt Noto Sans
+RUN apk update && apk add --no-cache \
+    libreoffice \
+    font-noto \
+    font-noto-cjk \
+    font-noto-extra \
+    msttcorefonts-installer && \
+    update-ms-fonts && \
+    fc-cache -f
+
+# Thiết lập thư mục làm việc
+WORKDIR /app
+
+# Tạo thư mục tạm cách ly cho LibreOffice
+RUN mkdir -p /tmp/skylink_docs && chmod 777 /tmp/skylink_docs
+
+# Sao chép package.json và cài đặt dependencies
+COPY package*.json ./
+RUN npm ci --only=production
+
+# Sao chép mã nguồn
+COPY . .
+
+# Chạy worker
+CMD ["node", "dist/worker/pdfWorker.js"]
