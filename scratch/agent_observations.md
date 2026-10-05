@@ -4,121 +4,84 @@
 ---
 
 ## 1. TÁC VỤ & LỆNH GHI NHẬN (Behind-The-Scenes Actions & Commands)
-- **Thời điểm**: `2026-10-05 16:32:00`
-- **Mục tiêu chặng này**: Cập nhật kỷ luật đa dạng hóa sơ đồ Mermaid theo ngữ cảnh Git thực tế (xóa bỏ vẽ cứng 4 trạm rập khuôn) và cập nhật sơ đồ Topology phân nhánh cho phiên làm việc của Giang Sơn.
-- **Tác vụ Người Dùng vừa thực thi**:
-  1. `git branch -m feature/giangson/day-01-report` (Đổi tên nhánh local)
-  2. `git push -u origin feature/giangson/day-01-report` (Đẩy nhánh cá nhân lên GitHub)
-  3. `git push origin --delete feature/day-01-report` (Dọn dẹp nhánh cũ trên GitHub)
-  4. `git checkout main` (Chuyển về nhánh chính)
+- **Thời điểm**: `2026-10-05 17:21:00`
+- **Mục tiêu chặng này**: Giải đáp nguyên nhân vì sao người dùng mở thư mục `reports/day-01` trên máy chỉ thấy 1 tệp, đồng thời trích xuất khôi phục Báo cáo 1 từ kho Git ra ổ đĩa để cả 2 tệp xuất hiện song song ngay trước mắt.
+- **Tác vụ thực hiện**:
+  - Trích xuất tệp Báo cáo 1 từ nhánh `feature/giangson/day-01-report` ra thư mục làm việc:
+    `git show feature/giangson/day-01-report:reports/day-01/Bao_Cao_Nghien_Cuu_Data_Ingestion_S0104.md`
+  - Ghi vào: `reports/day-01/Bao_Cao_Nghien_Cuu_Data_Ingestion_S0104.md`
 - **Lệnh chỉ-đọc Agent vừa thực thi ngầm**:
-  - `git status -s -b` (Kiểm tra trạng thái nhánh hiện tại & tệp sửa đổi)
-  - `git branch -a` (Kiểm tra toàn bộ nhánh local & remote)
-  - `git log -n 5 --oneline --graph --all` (Quét cây phân nhánh commit)
+  - `git branch --show-current` (Kiểm tra nhánh hiện tại -> trả về `main`)
+  - `git ls-tree feature/giangson/day-01-report reports/day-01/` (Kiểm tra blob trong commit)
+  - `git status -s -b` (Kiểm tra trạng thái sau khi khôi phục)
 
 ---
 
-## 2. SƠ ĐỒ TRỰC QUAN THEO NGỮ CẢNH: TOPOLOGY PHÂN NHÁNH & LIÊN KẾT REMOTE (MERMAID)
+## 2. SƠ ĐỒ TRỰC QUAN THEO NGỮ CẢNH: CƠ CHẾ ẨN FILE CỦA NHÁNH GIT & KHÔI PHỤC (MERMAID)
 
-*(Áp dụng Trường hợp A - Thao tác Nhánh & Đồng bộ Remote: Trực quan hóa cấu trúc rẽ nhánh thực tế, vị trí con trỏ `HEAD` và sự khác biệt giữa Local vs GitHub)*
+*(Áp dụng Trường hợp A: Cơ chế chuyển nhánh (Branching) và Trích xuất Object từ Commit Tree ra Working Directory)*
 
 ```mermaid
 flowchart TD
     %% =========================================================================
-    %% SƠ ĐỒ TOPOLOGY PHÂN NHÁNH & TRẠNG THÁI THEO DÕI (REMOTE TRACKING)
+    %% SƠ ĐỒ GIẢI NGHĨA VÌ SAO FILE TẠM ẨN KHI ĐỨNG Ở NHÁNH MAIN
     %% =========================================================================
 
-    subgraph ANCESTOR ["1. Điểm Tách Nhánh Chung (Common Ancestor)"]
-        C_BASE["Commit <code>edd7a97</code><br/><i>feat(agents): enforce mermaid output discipline...</i>"]
-    end
-
-    subgraph MAIN_BRANCH ["2. Tuyến Nhánh Chính (main)"]
+    subgraph GIT_OBJECTS ["Kho Lưu Trữ Đối Tượng Git (Git Database)"]
         direction TB
-        C_MAIN["Commit <code>11437e3</code><br/><i>feat(rules): enforce 4-stage git mermaid flow...</i>"]
-        HEAD_POINTER["🎯 <b>HEAD (Con trỏ làm việc hiện tại)</b><br/>Đang đứng tại: <code>main</code><br/>Trạng thái: 2 tệp đang sửa đổi (.agents/)"]
-        REMOTE_MAIN["🌐 <code>origin/main</code><br/>(Đã đồng bộ tuyệt đối)"]
+        COMMIT_FEAT["Commit <code>b5acd5e</code><br/><i>(Trên nhánh feature/giangson/day-01-report)</i><br/>Đang giữ Blob <code>9adebf1</code>: Báo Cáo 1"]
+        COMMIT_MAIN["Commit <code>11437e3</code><br/><i>(Trên nhánh main)</i><br/>Chưa từng chứa Báo Cáo 1"]
     end
 
-    subgraph FEATURE_BRANCH ["3. Tuyến Nhánh Cá Nhân (feature/giangson/day-01-report)"]
+    subgraph WORKSPACE ["Thư Mục Trên Ổ Cứng Máy Bạn (reports/day-01/)"]
         direction TB
-        C_FEAT["Commit <code>b5acd5e</code><br/><i>docs(report): add Day 1 service assets research...</i><br/>(13 tệp: reports/ + 02_SERVICE_S0104/)"]
-        REMOTE_FEAT["🚀 <code>origin/feature/giangson/day-01-report</code><br/>(Đã đồng bộ & thiết lập tracking)"]
-        DELETED_FEAT["❌ <i>origin/feature/day-01-report</i><br/>(Đã xóa an toàn trên GitHub)"]
+        subgraph BEFORE ["Trước Khi Khôi Phục (Đứng ở main)"]
+            F_ALONE["Chỉ thấy 1 tệp:<br/>📄 <code>Bao_Cao_Thiet_Ke_Kien_Truc_Luu_Tru_Lakehouse.md</code>"]
+        end
+        subgraph AFTER ["Sau Khi Trích Xuất (Hiện đủ cả 2 tệp)"]
+            F_1["📄 <b>Báo Cáo 1</b>: <code>Bao_Cao_Nghien_Cuu_Data_Ingestion_S0104.md</code><br/><i>(Đã kéo từ Blob 9adebf1 ra ổ đĩa)</i>"]
+            F_2["📄 <b>Báo Cáo 2</b>: <code>Bao_Cao_Thiet_Ke_Kien_Truc_Luu_Tru_Lakehouse.md</code><br/><i>(Tệp kiến trúc lưu trữ Lakehouse)</i>"]
+        end
     end
 
-    %% Mối liên kết giữa các commit và nhánh
-    C_BASE --> C_MAIN
-    C_BASE --> C_FEAT
+    COMMIT_MAIN -. "Quy định file hiển thị khi ở main" .-> BEFORE
+    COMMIT_FEAT ==> |"git show ... > Out-File"| F_1
 
-    C_MAIN --- HEAD_POINTER
-    C_MAIN <== "Đồng bộ tracking" ==> REMOTE_MAIN
+    classDef gitNode fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+    classDef beforeNode fill:#451a03,stroke:#f59e0b,stroke-width:1.5px,color:#ffffff;
+    classDef afterNode fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#ffffff;
 
-    C_FEAT <== "Đồng bộ tracking (-u origin)" ==> REMOTE_FEAT
-    DELETED_FEAT -. "Đã dọn dẹp" .-> REMOTE_FEAT
-
-    classDef baseNode fill:#1e293b,stroke:#94a3b8,stroke-width:1.5px,color:#ffffff;
-    classDef mainNode fill:#0f172a,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
-    classDef featNode fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#ffffff;
-    classDef headNode fill:#7c2d12,stroke:#fb923c,stroke-width:2px,color:#ffffff;
-    classDef remoteNode fill:#312e81,stroke:#818cf8,stroke-width:1.5px,color:#ffffff;
-    classDef delNode fill:#450a0a,stroke:#f87171,stroke-width:1px,stroke-dasharray: 4 4,color:#fca5a5;
-
-    class C_BASE baseNode;
-    class C_MAIN mainNode;
-    class HEAD_POINTER headNode;
-    class REMOTE_MAIN,REMOTE_FEAT remoteNode;
-    class C_FEAT featNode;
-    class DELETED_FEAT delNode;
+    class COMMIT_FEAT,COMMIT_MAIN gitNode;
+    class BEFORE beforeNode;
+    class AFTER afterNode;
 ```
 
 ---
 
 ## 3. NGUYÊN VĂN ĐẦU RA TERMINAL & BÓC TÁCH HỌC TẬP (Raw Output & Learning Breakdown)
 
-### 3.1. Lệnh `git branch -a` (Kiểm tra mạng lưới nhánh):
-- **Đầu ra nguyên văn**:
-  ```text
-    feature/giangson/day-01-report
-  * main
-    remotes/origin/HEAD -> origin/main
-    remotes/origin/feature/giangson/day-01-report
-    remotes/origin/main
-  ```
-- **Bóc tách giải nghĩa cho người mới**:
-  1. Dấu sao `*` trước `main`: Báo hiệu con trỏ `HEAD` đang ở nhánh `main`. Mọi thao tác commit tiếp theo sẽ gắn vào `main`.
-  2. `feature/giangson/day-01-report`: Nhánh cục bộ (Local Branch) lưu trên ổ cứng của bạn.
-  3. `remotes/origin/feature/giangson/day-01-report`: Nhánh tham chiếu từ xa (Remote Tracking Branch), phản ánh chính xác trạng thái trên máy chủ GitHub.
-  4. Nhánh cũ `feature/day-01-report` đã hoàn toàn biến mất trên cả Local và Remote.
+### 3.1. Lệnh `git branch --show-current`:
+- **Đầu ra**: `main`
+- **Bóc tách giải nghĩa**:
+  - Máy bạn hiện đang kích hoạt (checkout) nhánh `main`.
+  - **Quy tắc cơ bản của Git**: Mỗi nhánh là một không gian làm việc độc lập. Khi bạn ở nhánh `main`, Git sẽ làm cho thư mục trên máy bạn giống hệt như những gì đã commit trên `main`. Những tệp bạn chỉ commit ở nhánh `feature/giangson/day-01-report` sẽ **tự động bị ẩn đi** trên ổ đĩa để tránh lẫn lộn.
+  - Đó chính là lý do bạn mở thư mục `C:\Users\Admin\Desktop\CT_Group_Intern_project\reports\day-01` chỉ thấy 1 file mới tạo.
 
-### 3.2. Lệnh `git log -n 5 --oneline --graph --all` (Cây phân nhánh commit):
+### 3.2. Lệnh `git ls-tree feature/giangson/day-01-report reports/day-01/`:
 - **Đầu ra nguyên văn**:
   ```text
-  * 11437e3 feat(rules): enforce 4-stage git mermaid flow in observations and update agent core
-  | * b5acd5e docs(report): add Day 1 service assets research and data ingestion strategy
-  |/  
-  * edd7a97 feat(agents): enforce mermaid output discipline and reorganize architecture assets
-  * 36bdbd9 initial project
-  * 1cdd6f1 docs(readme): add comprehensive agent pair programming guide for all 3 members
-  ```
-- **Bóc tách giải nghĩa cho người mới**:
-  1. Ký hiệu `|/`: Đây là điểm rẽ nhánh (Fork). Tại commit `edd7a97`, lịch sử được tách làm 2 nhánh độc lập:
-     - Nhánh bên phải `b5acd5e`: Chứa báo cáo Ngày 1 và tài liệu S0104 của Giang Sơn.
-     - Nhánh bên trái `11437e3`: Chứa các quy tắc chuẩn hóa Agent của toàn đội.
-  2. Hai nhánh hoạt động độc lập giúp báo cáo của bạn được bảo vệ riêng biệt, sẵn sàng tạo Pull Request (PR) sau này mà không bị xung đột với mã nguồn của các thành viên khác.
-
-### 3.3. Lệnh `git status -s -b` (Trạng thái rút gọn cây làm việc):
-- **Đầu ra nguyên văn**:
-  ```text
-  ## main...origin/main
-   M .agents/AGENTS.md
-   M .agents/rules/mermaid_output_discipline.md
+  100644 blob 9adebf1aa47aea8605454eac8b7aba981069eca6	reports/day-01/Bao_Cao_Nghien_Cuu_Data_Ingestion_S0104.md
   ```
 - **Bóc tách giải nghĩa**:
-  - `## main...origin/main`: Bạn đang ở nhánh `main` và đang đồng bộ hoàn toàn với remote (`origin/main`).
-  - ` M` (chữ M lùi một khoảng trắng): Tệp đã bị chỉnh sửa trong **Working Directory** nhưng **chưa đưa vào Staging Area** (chưa chạy `git add`).
+  - Lệnh này soi thẳng vào cơ sở dữ liệu ngầm của Git trên nhánh `feature/giangson/day-01-report`.
+  - Kết quả chứng minh: Tệp `Bao_Cao_Nghien_Cuu_Data_Ingestion_S0104.md` vẫn tồn tại nguyên vẹn 100% (mã blob `9adebf1...`), không hề bị mất hay bị ghi đè.
+
+### 3.3. Kết quả sau khi trích xuất ra đĩa:
+- Thư mục `reports/day-01` hiện tại đã có đầy đủ 2 tệp:
+  1. `Bao_Cao_Nghien_Cuu_Data_Ingestion_S0104.md` (19.098 bytes)
+  2. `Bao_Cao_Thiet_Ke_Kien_Truc_Luu_Tru_Lakehouse.md` (18.915 bytes)
 
 ---
 
-## 4. KẾT LUẬN & ĐỀ XUẤT BƯỚC TIẾP THEO
-- Toàn bộ thay đổi về quy tắc kỷ luật đa dạng hóa sơ đồ Mermaid đã được cập nhật chuẩn xác vào `.agents/AGENTS.md`, `.agents/rules/mermaid_output_discipline.md` và `scratch/agent_observations.template.md`.
-- Sơ đồ trực quan tại sổ tay này đã chuyển đổi linh hoạt sang **Sơ đồ Topology Nhánh & Remote Tracking**, loại bỏ triệt để tính rập khuôn.
+## 4. KẾT LUẬN & TRẠNG THÁI HIỆN TẠI
+- Bạn hãy mở lại cây thư mục `reports/day-01` trên VS Code / File Explorer: **Cả 2 tệp báo cáo đã hiện diện rõ ràng song song**.
