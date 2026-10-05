@@ -103,7 +103,13 @@ Khi ghi nhận thao tác Git vào `scratch/agent_observations.md`, Agent phải 
 1. **Mã lệnh & Mục đích cờ lệnh**: Giải thích lệnh đó làm gì, từng cờ lệnh (flags như `-s`, `--oneline`, `-n`, `-p`...) có ý nghĩa gì.
 2. **Đầu ra nguyên văn (Raw Output)**: Hiển thị 100% kết quả in ra từ Terminal, không cắt bớt hay giấu lỗi.
 3. **Bóc tách giải nghĩa từng dòng (Line-by-line Breakdown)**: Dịch nghĩa và giải thích bản chất kỹ thuật của từng dòng output bằng ngôn từ sư phạm dễ hiểu (Ví dụ: thế nào là `Untracked files`, `Changes to be committed`, `Working tree clean`, cơ chế hoạt động của Staging Area, Commit Tree...).
-4. **Sơ đồ trực quan Mermaid luồng 4 trạm Git (Bắt buộc trong `.md`)**: Vẽ sơ đồ Mermaid mô tả vị trí và sự di chuyển của các tệp qua 4 trạm: `Working Directory → Staging Area → Local Repository → Remote Repository` để người xem hiểu ngay bản chất lệnh vừa chạy đã chuyển tệp từ đâu đến đâu.
+4. **Sơ đồ trực quan Mermaid theo ngữ cảnh thực tế (Linh hoạt & Đa dạng)**:
+   - **CẤM RẬP KHUÔN CỐ ĐỊNH**: Tuyệt đối không vẽ cứng nhắc một mẫu sơ đồ 4 trạm giống hệt nhau cho mọi trường hợp.
+   - **Tùy biến linh hoạt theo bản chất thao tác Git**:
+     * *Khi thao tác Nhánh (Branch / Rename / Delete Remote)*: Dùng `gitGraph` hoặc Flowchart cấu trúc nhánh để thể hiện sự rẽ nhánh, con trỏ HEAD và trạng thái nhánh cục bộ vs nhánh remote.
+     * *Khi thao tác Staging & Commit (`git add`, `git commit`, `git push`)*: Dùng sơ đồ luồng 4 trạm `Working Directory → Staging Area → Local Repository → Remote Repository` để làm nổi bật vị trí tệp vừa di chuyển.
+     * *Khi kiểm tra Trạng thái (`git status`, `git diff`)*: Dùng sơ đồ trạng thái `stateDiagram-v2` hoặc Flowchart phân loại tệp (Untracked vs Modified vs Staged).
+     * *Khi thao tác Stash, Reset, Revert*: Dùng sơ đồ ngăn xếp (Stack) hoặc sơ đồ dịch chuyển con trỏ HEAD giữa các commit.
 
 ### 3. Quy chế bảo toàn tệp quan sát trong `scratch/`:
 

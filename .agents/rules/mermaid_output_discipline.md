@@ -27,10 +27,13 @@
      - Tệp sổ tay quan sát minh bạch `scratch/agent_observations.md`.
 2. **QUY CHUẨN KHI GHI VÀO TỆP MARKDOWN**:
    - Bắt buộc tuân thủ kỹ năng [`mermaid-architect`](../skills/mermaid-architect/SKILL.md): Safe Label Quoting (bọc nháy kép nhãn có ký tự đặc biệt), bố cục cân đối (tránh dàn ngang quá 5 node trên 1 hàng để tránh bị nén bẹp trong preview).
-3. **QUY ĐỊNH BẮT BUỘC VẼ SƠ ĐỒ GIT 4 TRẠNG THÁI (TRONG `agent_observations.md`)**:
-   - Mỗi khi ghi nhận các thao tác Git (`git status`, `git add`, `git commit`, `git push`, `git branch`...), Agent **BẮT BUỘC** phải vẽ sơ đồ Mermaid luồng 4 trạm:
-     `Working Directory → Staging Area → Local Repository → Remote Repository`
-     để chỉ rõ từng tệp đang ở đâu, vừa chuyển từ trạm nào sang trạm nào qua câu lệnh vừa chạy.
+3. **QUY ĐỊNH VẼ SƠ ĐỒ GIT TRONG `agent_observations.md` (LINH HOẠT THEO NGỮ CẢNH)**:
+   - **CẤM RẬP KHUÔN CỐ ĐỊNH**: Tuyệt đối không vẽ cứng nhắc một sơ đồ 4 trạm tĩnh cho mọi trường hợp.
+   - **Đa dạng hóa theo bản chất thao tác Git**:
+     * *Khi thao tác Nhánh (Branch / Rename / Delete Remote)*: Dùng `gitGraph` hoặc Flowchart cấu trúc nhánh thể hiện topology nhánh cục bộ vs remote và vị trí con trỏ HEAD.
+     * *Khi thao tác Staging & Commit (`git add`, `git commit`, `git push`)*: Dùng sơ đồ luồng 4 trạm `Working Directory → Staging Area → Local Repository → Remote Repository`.
+     * *Khi kiểm tra Trạng thái (`git status`, `git diff`)*: Dùng sơ đồ trạng thái `stateDiagram-v2` hoặc Flowchart phân loại trạng thái tệp (Untracked vs Modified vs Staged).
+     * *Khi thao tác Stash, Revert, Reset*: Dùng sơ đồ ngăn xếp (Stack) hoặc sơ đồ dịch chuyển con trỏ HEAD giữa các commit.
 
 
 ---
