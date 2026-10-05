@@ -80,6 +80,7 @@ Dự án được trang bị hệ thống Customization Agent đạt chuẩn c�
   - [`skylink_monorepo.md`](./.agents/rules/skylink_monorepo.md): TypeScript Strict, `no any`, Zod DTO single source of truth.
   - [`security_data_sanitization.md`](./.agents/rules/security_data_sanitization.md): Chống rò rỉ dữ liệu `restricted`, ẩn vector score thô.
   - [`proposal_legal_compliance.md`](./.agents/rules/proposal_legal_compliance.md): Bắt buộc điều khoản miễn trừ pháp lý & cách ly số liệu chưa thẩm định.
+  - [`git_mutation_guardrail.md`](./.agents/rules/git_mutation_guardrail.md): Kỷ luật Git chỉ-đọc (Read-Only Git), cấm Agent tự ý commit/push, bảo vệ quyền kiểm soát kho mã nguồn tuyệt đối của Người Dùng.
 - **Kỹ năng Dùng chung (Workspace Skills)**:
   - [`mermaid-architect`](./.agents/skills/mermaid-architect/SKILL.md): Chuyên gia sơ đồ kỹ thuật Mermaid.
   - [`e2e-demo-orchestrator`](./.agents/skills/e2e-demo-orchestrator/SKILL.md): Kịch bản diễn tập Demo 10 phút ngày thứ 7.
@@ -136,3 +137,76 @@ powershell -ExecutionPolicy Bypass -File .agents/scripts/verify_refactoring.ps1
 ```
 
 *Kết quả mong đợi: `100% TẤT CẢ CÁC TIÊU CHÍ KIỂM TOÁN ĐỀU PASSED! (Exit code: 0)`.*
+
+---
+
+## 💡 8. CẨM NANG SỬ DỤNG AGENT CHO 3 THÀNH VIÊN KHI LẬP TRÌNH (AGENT PAIR PROGRAMMING GUIDE)
+
+Hệ thống Agent trong `.agents/` được thiết kế như một **Lập trình viên Cặp (Pair Programmer) chuẩn mực** cho từng thành viên. Khi mở dự án trong IDE Antigravity, Agent tự động nạp toàn bộ Plugin, Kỹ năng và Quy tắc vào ngữ cảnh làm việc.
+
+Dưới đây là cẩm nang chi tiết giúp từng thành viên ra lệnh (prompt) chính xác cho Agent trong từng ngày phát triển:
+
+### 📱 8.1. Hướng Dẫn Dành Cho Thành Viên A: Mai Tấn Giáp (Mobile Client)
+- **Plugin phụ trách**: [`skylink-mobile-client`](./.agents/plugins/skylink-mobile-client/plugin.json)
+- **Kỹ năng chủ lực**:
+  - [`expo-mobile-architect`](./.agents/plugins/skylink-mobile-client/skills/expo-mobile-architect/SKILL.md): Kiến trúc Expo, Axios Interceptor với hàng đợi Silent Refresh Token chống race condition, lưu trữ Token an toàn qua `expo-secure-store`, quản lý cache TanStack Query.
+  - [`mobile-ui-components`](./.agents/plugins/skylink-mobile-client/skills/mobile-ui-components/SKILL.md): Xây dựng UI React Native chuyên dụng: Màn hình Chat tư vấn, Thanh tiến độ nhu cầu (`RequirementsProgressBar`), Form bổ sung thông tin thiếu (`MissingFieldsForm`), Ngăn kéo bằng chứng (`EvidenceDrawer`), Thẻ đề xuất dịch vụ, và Trình xem PDF nội bộ.
+- **Mẫu câu lệnh (Prompt) gợi ý khi code**:
+  - *"Áp dụng skill `expo-mobile-architect`, hãy xây dựng Axios client kèm cơ chế Silent Refresh Queue lưu token trong `expo-secure-store` theo đúng [00_auth_rbac_spec.md](./docs/spec/00_auth_rbac_spec.md)."*
+  - *"Áp dụng skill `mobile-ui-components`, hãy code component `EvidenceDrawer` trượt từ đáy màn hình hiển thị danh sách trích dẫn chunk nguồn cho proposal theo [03_service_matching_guardrail_spec.md](./docs/spec/03_service_matching_guardrail_spec.md)."*
+  - *"Hãy code màn hình so sánh 2 dịch vụ Drone Candidate Services P1 theo đúng hợp đồng [07_service_comparison_spec.md](./docs/spec/07_service_comparison_spec.md)."*
+- **Quy tắc kỷ luật bắt buộc**: [`mobile_architecture_discipline.md`](./.agents/plugins/skylink-mobile-client/rules/mobile_architecture_discipline.md) — Không hardcode API URL (dùng `EXPO_PUBLIC_*`), ẩn điểm số vector thô khỏi UI, và không để client tự ý quyết định chuyển trạng thái tư vấn.
+
+---
+
+### 🚪 8.2. Hướng Dẫn Dành Cho Thành Viên B: Lê Phúc Khang (Backend & Workflow Engine)
+- **Plugin phụ trách**: [`skylink-workflow-engine`](./.agents/plugins/skylink-workflow-engine/plugin.json)
+- **Kỹ năng chủ lực**:
+  - [`stateful-consultation`](./.agents/plugins/skylink-workflow-engine/skills/stateful-consultation/SKILL.md): Quản trị Máy trạng thái tư vấn (State Machine), kiểm tra hợp lệ Zod schema và logic vòng lặp làm rõ Missing-Info Loop.
+  - [`devops-docker-libreoffice`](./.agents/plugins/skylink-workflow-engine/skills/devops-docker-libreoffice/SKILL.md): Cấu hình Docker Compose cho PostgreSQL 16 + pgvector, Prisma raw migration và worker LibreOffice headless chuyển đổi DOCX sang PDF không lỗi font.
+  - [`proposal-pipeline`](./.agents/plugins/skylink-workflow-engine/skills/proposal-pipeline/SKILL.md): Quy trình sinh Proposal từ JSON có cấu trúc qua docxtemplater/PizZip và xuất bản PDF chuẩn qua LibreOffice.
+  - [`rbac-audit-sentinel`](./.agents/plugins/skylink-workflow-engine/skills/rbac-audit-sentinel/SKILL.md): Bảo vệ các endpoint API bằng NestJS Guards phân quyền 11 quyền và ghi nhật ký kiểm toán bất biến (Audit Telemetry).
+- **Mẫu câu lệnh (Prompt) gợi ý khi code**:
+  - *"Áp dụng skill `devops-docker-libreoffice`, hãy cấu hình tệp `docker-compose.yml` khởi chạy PostgreSQL 16 kèm extension pgvector và worker LibreOffice headless ổn định."*
+  - *"Áp dụng skill `stateful-consultation`, hãy viết `ConsultationStateMachine` quản lý chuyển đổi từ `DISCOVERY` -> `COLLECTING` -> `MATCHING` -> `PROPOSAL_READY` theo [01_consultation_workflow_spec.md](./docs/spec/01_consultation_workflow_spec.md)."*
+  - *"Áp dụng skill `proposal-pipeline`, hãy tạo service ánh xạ dữ liệu `proposal_data.json` vào template DOCX và kích hoạt worker LibreOffice xuất ra file PDF hoàn chỉnh."*
+  - *"Áp dụng skill `rbac-audit-sentinel`, hãy tạo Guard `@RequirePermissions('proposal:approve')` và hàm ghi nhận sự kiện `AUDIT_PROPOSAL_EVENT` theo [08_audit_telemetry_spec.md](./docs/spec/08_audit_telemetry_spec.md)."*
+- **Quy tắc kỷ luật bắt buộc**: [`workflow_state_discipline.md`](./.agents/plugins/skylink-workflow-engine/rules/workflow_state_discipline.md) — Backend giữ thẩm quyền tối cao về chuyển đổi trạng thái; nhật ký kiểm toán phải là bất biến (append-only).
+
+---
+
+### 🧠 8.3. Hướng Dẫn Dành Cho Thành Viên C: Nguyễn Quyết Giang Sơn (AI Pipeline & Knowledge)
+- **Plugin phụ trách**: [`skylink-service-intelligence`](./.agents/plugins/skylink-service-intelligence/plugin.json)
+- **Kỹ năng chủ lực**:
+  - [`canonical-chunker`](./.agents/plugins/skylink-service-intelligence/skills/canonical-chunker/SKILL.md): Chuẩn hóa dữ liệu Service Assets theo mô hình Canonical 5 cấp & Schema-Aware Semantic Chunking với thuật toán băm ổn định `chunk_id`.
+  - [`hybrid-retrieval`](./.agents/plugins/skylink-service-intelligence/skills/hybrid-retrieval/SKILL.md): Thiết kế và tối ưu truy vấn lai kết hợp PostgreSQL FTS (`tsvector`) + Dense Vector (`pgvector`) với thuật toán xếp hạng Reciprocal Rank Fusion (RRF với $k=60$).
+  - [`guardrail-sentinel`](./.agents/plugins/skylink-service-intelligence/skills/guardrail-sentinel/SKILL.md): Thiết lập 2 tầng Guardrails (Pre-check Policy Filter & Post-check Citation Grounding Auditor) chặn đứng 100% ảo giác về giá, tiến độ, SLA.
+  - [`ai-golden-evaluator`](./.agents/plugins/skylink-service-intelligence/skills/ai-golden-evaluator/SKILL.md): Thiết kế và đo lường định lượng Golden Test Set (Precision, Recall, Grounding Rate, Hallucination Rate).
+- **Mẫu câu lệnh (Prompt) gợi ý khi code**:
+  - *"Áp dụng skill `canonical-chunker`, hãy viết script băm dữ liệu dịch vụ drone nông nghiệp S0112 thành các chunks chuẩn kèm `chunk_id` định danh duy nhất."*
+  - *"Áp dụng skill `hybrid-retrieval`, hãy viết câu truy vấn SQL lai Prisma kết hợp FTS và pgvector Cosine similarity với thuật toán RRF theo [02_hybrid_retrieval_spec.md](./docs/spec/02_hybrid_retrieval_spec.md)."*
+  - *"Áp dụng skill `guardrail-sentinel`, hãy tạo bộ lọc kiểm toán Citation hậu kỳ để bắt lỗi các tuyên bố về giá hoặc thời gian bay không có bằng chứng chunk kiểm chứng."*
+  - *"Áp dụng skill `ai-golden-evaluator`, hãy thiết lập kịch bản chạy Golden Test Set 15 ca kiểm thử và xuất bảng báo cáo định lượng rủi ro ảo giác."*
+- **Quy tắc kỷ luật bắt buộc**: [`guardrail_discipline.md`](./.agents/plugins/skylink-service-intelligence/rules/guardrail_discipline.md) — Tuyệt đối không để AI tự ý hứa hẹn về giá và SLA; mọi dữ liệu chưa kiểm chứng bắt buộc phải cô lập vào mục `items_to_confirm`.
+
+---
+
+### 🤝 8.4. Kỹ Năng Dùng Chung Cho Cả 3 Thành Viên
+1. **Thiết kế Sơ đồ Kỹ thuật ([`mermaid-architect`](./.agents/skills/mermaid-architect/SKILL.md))**:
+   - Khi cần vẽ sơ đồ kiến trúc, luồng nghiệp vụ hoặc state machine: *"Hãy dùng skill `mermaid-architect` vẽ sơ đồ Sequence Flowchart Horizontal-First mô tả quy trình..."*
+2. **Diễn tập Demo 10 Phút ([`e2e-demo-orchestrator`](./.agents/skills/e2e-demo-orchestrator/SKILL.md))**:
+   - Khi chuẩn bị nghiệm thu Ngày 7: *"Hãy dùng skill `e2e-demo-orchestrator` chạy kiểm tra hợp đồng dữ liệu kịch bản demo gói S0112 xem có blocker nào không."*
+
+---
+
+### 🛡️ 8.5. Kỷ Luật An Toàn Git Khi Làm Việc Với Agent
+Tuân thủ quy tắc [`git_mutation_guardrail.md`](./.agents/rules/git_mutation_guardrail.md):
+- **Agent tuyệt đối KHÔNG tự ý chạy các lệnh thay đổi kho chứa (`git add`, `git commit`, `git push`, `git reset`)**.
+- Sau khi hoàn thành viết mã, Agent sẽ hiển thị sẵn thông điệp commit và khối lệnh trong chat.
+- **Thành viên chỉ cần sao chép và tự chạy trên terminal cá nhân** để toàn quyền kiểm soát mã nguồn của mình:
+  ```bash
+  git add <cac_file_vua_sua>
+  git commit -m "feat(module): mo ta ngan gon"
+  git push origin main
+  ```
+

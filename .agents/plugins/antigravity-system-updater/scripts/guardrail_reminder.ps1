@@ -1,4 +1,4 @@
-﻿# ==============================================================================
+# ==============================================================================
 # PreInvocation Guardrail Reminder in PowerShell
 # Fast, native, zero dependency
 # Output pure ASCII JSON with \uXXXX escaping to prevent console codepage corruption
@@ -21,6 +21,9 @@ $reminderText = @'
    - Bắt buộc chạy kiểm định sau khi sửa: powershell -ExecutionPolicy Bypass -File .agents/scripts/verify_refactoring.ps1.
 5. TIẾT LỘ LŨY TIẾN (PROGRESSIVE DISCLOSURE):
    - Thư mục references/ là tri thức kỹ thuật tĩnh; chỉ mở ra khi Người Dùng yêu cầu cập nhật/bảo trì để tối ưu token.
+6. KỶ LUẬT GIT CHỈ-ĐỌC (READ-ONLY GIT POLICY):
+   - CẤM TUYỆT ĐỐI tự ý chạy các lệnh biến đổi Git (git add, git commit, git push, git reset...).
+   - Mọi thao tác commit/push BẮT BUỘC phải đưa ra khung chat dưới dạng khối lệnh để Người Dùng tự kiểm tra và tự tay thực thi.
 '@
 
 $payload = @{

@@ -287,7 +287,7 @@ foreach ($sp in $skylinkPlugins) {
 # 3.11 Kiem tra WORKSPACE RULES (.agents/rules/)
 Write-Host "`n3.11 KIEM TRA QUY TAC QUAN TRI WORKSPACE (.agents/rules/):" -ForegroundColor Yellow
 $rulesDir = Join-Path $agentsRoot "rules"
-$expectedRules = @("skylink_monorepo.md", "security_data_sanitization.md", "proposal_legal_compliance.md")
+$expectedRules = @("skylink_monorepo.md", "security_data_sanitization.md", "proposal_legal_compliance.md", "git_mutation_guardrail.md")
 if (Test-Path $rulesDir) {
     foreach ($rFile in $expectedRules) {
         $rPath = Join-Path $rulesDir $rFile

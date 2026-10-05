@@ -55,6 +55,7 @@ Không gian làm việc đã được thiết lập hệ sinh thái tùy biến 
 1. **[skylink_monorepo.md](./rules/skylink_monorepo.md)**: Chuẩn Monorepo, TypeScript Strict, Zod DTO giao tiếp.
 2. **[security_data_sanitization.md](./rules/security_data_sanitization.md)**: Chống rò rỉ dữ liệu `restricted`, ẩn điểm vector thô.
 3. **[proposal_legal_compliance.md](./rules/proposal_legal_compliance.md)**: Điều khoản miễn trừ pháp lý bắt buộc & cách ly số liệu chưa kiểm chứng vào `items_to_confirm`.
+4. **[git_mutation_guardrail.md](./rules/git_mutation_guardrail.md)**: Cấm Agent tự ý chạy các lệnh biến đổi Git/GitHub (`add`, `commit`, `push`...). Mọi thao tác ghi Git phải đưa ra khung chat để Người Dùng tự tay thực hiện.
 
 ---
 
@@ -121,3 +122,19 @@ Hệ thống được bảo vệ tự động thông qua Lifecycle Hook `PreInvo
   4. Kiểm toán trước - Sửa đổi sau (Audit-First) & chạy `verify_refactoring.ps1`.
   5. Tiết lộ lũy tiến (Progressive Disclosure) để tối ưu ngữ cảnh token.
 - **Lợi ích**: Ngăn chặn hoàn toàn hiện tượng Agent "quên rule" sau các phiên hội thoại dài mà vẫn bảo toàn ngữ cảnh tinh gọn (nhờ cơ chế `ephemeralMessage` tự hủy sau lượt).
+
+---
+
+## 7. KỶ LUẬT BẤT BIẾN THAO TÁC GIT & GITHUB (READ-ONLY GIT POLICY)
+
+Quy định bảo vệ quyền kiểm soát kho mã nguồn tuyệt đối của Người Dùng theo quy tắc [git_mutation_guardrail.md](./rules/git_mutation_guardrail.md):
+
+1. **CẤM TUYỆT ĐỐI TỰ Ý THAY ĐỔI GIT**:
+   - Agent **CẤM TUYỆT ĐỐI** tự ý thực thi các lệnh làm biến đổi kho chứa: `git add`, `git commit`, `git push`, `git pull`, `git reset`, `git revert`, `git restore`, `git branch -d/-D`, `git merge`, `git rebase`.
+2. **QUY TRÌNH ĐƯA LỆNH RA KHUNG CHAT**:
+   - Khi hoàn thành tác vụ mã nguồn, Agent chỉ được phép:
+     - Soạn sẵn thông điệp commit chuẩn Conventional Commits (`feat: ...`, `fix: ...`, `docs: ...`).
+     - Đưa khối lệnh đầy đủ ra khung chat để **Người Dùng tự kiểm tra và tự tay chạy trên terminal cá nhân**.
+3. **CÁC LỆNH CHỈ-ĐỌC ĐƯỢC PHÉP CHẠY**:
+   - Agent chỉ được phép chạy các lệnh quan sát, đọc trạng thái: `git status`, `git log`, `git diff`, `git branch` (không cờ xóa), `git remote -v`.
+   - Khi chạy lệnh chỉ-đọc, vẫn bắt buộc cập nhật giải nghĩa 3 phần cho người nhập môn vào `scratch/agent_observations.md`.
