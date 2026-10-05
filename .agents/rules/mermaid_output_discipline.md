@@ -24,8 +24,14 @@
      - Các tệp tài liệu kiến trúc và đặc tả trong `docs/` (ví dụ `docs/GASCOLAE_Kien_Truc_He_Thong_Mermaid.md`, `docs/spec/*.md`).
      - Các tệp báo cáo tiến độ và nghiên cứu trong `reports/` (ví dụ `reports/day-01/*.md`).
      - Tệp hướng dẫn `README.md`.
+     - Tệp sổ tay quan sát minh bạch `scratch/agent_observations.md`.
 2. **QUY CHUẨN KHI GHI VÀO TỆP MARKDOWN**:
    - Bắt buộc tuân thủ kỹ năng [`mermaid-architect`](../skills/mermaid-architect/SKILL.md): Safe Label Quoting (bọc nháy kép nhãn có ký tự đặc biệt), bố cục cân đối (tránh dàn ngang quá 5 node trên 1 hàng để tránh bị nén bẹp trong preview).
+3. **QUY ĐỊNH BẮT BUỘC VẼ SƠ ĐỒ GIT 4 TRẠNG THÁI (TRONG `agent_observations.md`)**:
+   - Mỗi khi ghi nhận các thao tác Git (`git status`, `git add`, `git commit`, `git push`, `git branch`...), Agent **BẮT BUỘC** phải vẽ sơ đồ Mermaid luồng 4 trạm:
+     `Working Directory → Staging Area → Local Repository → Remote Repository`
+     để chỉ rõ từng tệp đang ở đâu, vừa chuyển từ trạm nào sang trạm nào qua câu lệnh vừa chạy.
+
 
 ---
 

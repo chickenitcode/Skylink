@@ -1,62 +1,97 @@
 # NHẬT KÝ QUAN SÁT TỨC THỜI CỦA AGENT (Agent Working Snapshot)
-> **Mục đích**: Ghi lại minh bạch **chính xác những gì Agent vừa xem, vừa đọc, vừa chạy ngầm** ở thời điểm làm việc hiện tại, kèm **hiển thị rõ ràng dòng lệnh đã chạy, output nguyên văn và giải thích cặn kẽ từng dòng log** để Người Dùng vừa kiểm soát hệ thống, vừa học hỏi bản chất kỹ thuật (đặc biệt là các thao tác Git). Ghi đè snapshot mới sau mỗi chặng thao tác.
+> **Mục đích**: Ghi lại minh bạch **chính xác những gì Agent vừa xem, vừa đọc, vừa chạy ngầm** ở thời điểm làm việc hiện tại, kèm **hiển thị rõ ràng dòng lệnh đã chạy, output nguyên văn, bóc tách giải thích cặn kẽ và sơ đồ Mermaid trực quan luồng 4 trạm Git** để Người Dùng vừa kiểm soát hệ thống, vừa hiểu sâu bản chất kỹ thuật Git.
 
 ---
 
-## 1. TÁC VỤ & LỆNH AGENT VỪA THỰC HIỆN (Behind-The-Scenes Actions & Commands)
-- **Thời điểm**: `2026-10-05 16:11:50`
-- **Mục tiêu chặng này**:
-  1. Chạy lệnh chỉ-đọc `git status` theo **Kỷ luật Git Chỉ-Đọc (Read-Only Git Policy)** để rà soát danh sách các tệp đang thay đổi.
-  2. Bóc tách danh mục tệp thành 2 phần độc lập theo yêu cầu Người Dùng:
-     - **Phần 1**: Các thay đổi hệ thống Agent (`.agents/`, quy tắc mới, script kiểm toán) $\to$ Đưa lên nhánh `main`.
-     - **Phần 2**: Các tài liệu báo cáo nghiên cứu (`reports/`, tệp phân tích 0-10) $\to$ Tách ra tạo nhánh mới riêng biệt (`feature/day-01-report`).
-  3. Cập nhật giải nghĩa sư phạm 3 phần cho người nhập môn Git.
-- **Lệnh Terminal Agent đã chạy (Chỉ chạy lệnh READ-ONLY)**:
-  1. `git status` (Chỉ-đọc kiểm tra trạng thái kho mã nguồn)
+## 1. TÁC VỤ & LỆNH VỪA GHI NHẬN (Behind-The-Scenes Actions & Commands)
+- **Thời điểm**: `2026-10-05 16:18:50`
+- **Tác vụ Người Dùng vừa thực thi thành công**:
+  1. `git add reports/ 02_SERVICE_S0104/`
+  2. `git commit -m "docs(report): add Day 1 service assets research and data ingestion strategy"`
+  3. `git branch -m feature/giangson/day-01-report` (Đổi tên nhánh local sang tên Giang Sơn)
+  4. `git push -u origin feature/giangson/day-01-report` (Đẩy nhánh mới lên GitHub)
+  5. `git push origin --delete feature/day-01-report` (Xóa nhánh cũ trên GitHub)
+- **Tác vụ Agent vừa cập nhật**:
+  - Bổ sung quy định bắt buộc vẽ sơ đồ Mermaid luồng 4 trạm Git vào `.agents/AGENTS.md`, `.agents/rules/mermaid_output_discipline.md` và mẫu template `scratch/agent_observations.template.md`.
 
 ---
 
-## 2. NGUYÊN VĂN ĐẦU RA TERMINAL & BÓC TÁCH HỌC TẬP (Raw Output & Learning Breakdown)
+## 2. SƠ ĐỒ TRỰC QUAN LUỒNG 4 TRẠNG THÁI GIT (MERMAID FLOW)
 
-### 2.1. Kiểm Tra Trạng Thái Kho Mã Nguồn `git status`:
-- **Đầu ra nguyên văn (Raw Output)**:
+```mermaid
+flowchart LR
+    %% =========================================================================
+    %% SƠ ĐỒ BẢN ĐỒ DỮ LIỆU GIT 4 TRẠM: TỪ MÁY CÁ NHÂN LÊN GITHUB
+    %% =========================================================================
+
+    subgraph WD ["1. Working Directory<br/><i>(Thư mục làm việc trên máy)</i>"]
+        direction TB
+        WD_Files["Các tệp cấu hình Agent đang sửa:<br/>• <code>.agents/AGENTS.md</code><br/>• <code>.agents/rules/mermaid_output_discipline.md</code><br/>• <code>docs/architecture/</code>"]
+    end
+
+    subgraph SA ["2. Staging Area<br/><i>(Vùng đệm chờ Commit - Index)</i>"]
+        direction TB
+        SA_State["Trạng thái hiện tại:<br/><b>ĐÃ COMMITTED HẾT</b><br/><i>(Không có tệp nào đang xếp hàng)</i>"]
+    end
+
+    subgraph LR ["3. Local Repository<br/><i>(Kho lưu trữ trên máy cá nhân)</i>"]
+        direction TB
+        LR_Commit["Commit mã <code>b5acd5e</code><br/>Nhánh: <code>feature/giangson/day-01-report</code><br/>• 13 tệp reports & data S0104"]
+    end
+
+    subgraph RR ["4. Remote Repository<br/><i>(Máy chủ GitHub: chickenitcode/Skylink)</i>"]
+        direction TB
+        RR_Branch["Nhánh Remote đã cập nhật:<br/>🚀 <code>origin/feature/giangson/day-01-report</code><br/>❌ <i>Đã xóa: origin/feature/day-01-report</i>"]
+    end
+
+    %% Các mũi tên biểu thị thao tác vừa diễn ra
+    WD -. "1. git add" .-> SA
+    SA -. "2. git commit" .-> LR
+    LR == "3. git push -u origin" ==> RR
+
+    classDef stageNode fill:#0f172a,stroke:#38bdf8,stroke-width:1.5px,color:#ffffff;
+    classDef activeNode fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#ffffff;
+    classDef remoteNode fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+
+    class WD,SA stageNode;
+    class LR activeNode;
+    class RR remoteNode;
+```
+
+---
+
+## 3. NGUYÊN VĂN ĐẦU RA TERMINAL & BÓC TÁCH HỌC TẬP (Raw Output & Learning Breakdown)
+
+### 3.1. Thao tác Commit Báo cáo Nghiên cứu:
+- **Đầu ra nguyên văn**:
   ```text
-  On branch main
-  Your branch is up to date with 'origin/main'.
-
-  Changes not staged for commit:
-    (use "git add/rm <file>..." to update what will be committed)
-    (use "git restore <file>..." to discard changes in working directory)
-          modified:   .agents/AGENTS.md
-          modified:   .agents/GEMINI.md
-          modified:   .agents/scripts/verify_refactoring.ps1
-          modified:   .agents/skills/mermaid-architect/scripts/validate_mermaid_syntax.ps1
-          deleted:    docs/Ke_Hoach_Thiet_Ke_Plugin_Skill_SkyLink.md
-          modified:   reports/README.md
-          modified:   scratch/agent_observations.md
-
-  Untracked files:
-    (use "git add <file>..." to include in what will be committed)
-          .agents/rules/mermaid_output_discipline.md
-          02_SERVICE_S0104/
-          docs/GASCOLAE_Kien_Truc_He_Thong_Mermaid.md
-          docs/architecture/
-          reports/day-01/
-
-  no changes added to commit (use "git add" and/or "git commit -a")
+  [feature/day-01-report b5acd5e] docs(report): add Day 1 service assets research and data ingestion strategy
+   13 files changed, 231 insertions(+), 6 deletions(-)
+   create mode 100644 02_SERVICE_S0104/S0104_00_RESEARCH_WORKBOOK.xlsx
+   create mode 100644 02_SERVICE_S0104/S0104_01_Service_Knowledge_Base.docx
+   ...
+   create mode 100644 reports/day-01/Bao_Cao_Nghien_Cuu_Data_Ingestion_S0104.md
   ```
-- **Bóc tách giải nghĩa phân luồng commit cho Người Dùng**:
-  1. **Nhóm cấu hình Agent đưa lên `main`**:
-     - `.agents/AGENTS.md`, `.agents/GEMINI.md`: Đã đăng ký quy tắc cấm vẽ Mermaid trong khung chat.
-     - `.agents/rules/mermaid_output_discipline.md`: Quy tắc kỹ thuật mới.
-     - `.agents/scripts/verify_refactoring.ps1`: Kịch bản kiểm toán đã bổ sung rule mới.
-     - `.agents/skills/mermaid-architect/scripts/validate_mermaid_syntax.ps1`: Script kiểm tra cú pháp an toàn.
-  2. **Nhóm Báo cáo Nghiên cứu tách sang nhánh mới**:
-     - `reports/README.md`: Mục lục báo cáo theo ngày.
-     - `reports/day-01/`: Thư mục báo cáo Ngày 1 chứa `Bao_Cao_Nghien_Cuu_Data_Ingestion_S0104.md` và `view_diagram_interactive.html`.
-     - `02_SERVICE_S0104/`: Bộ tệp tài sản số phục vụ nghiên cứu.
-  3. `no changes added to commit`: Tuân thủ nghiêm ngặt **Quy tắc Git Chỉ-Đọc**, Agent không tự ý chạy lệnh ghi Git (`git add`, `git commit`, `git checkout -b`). Toàn bộ quyền kiểm soát thuộc về Người Dùng.
+- **Bóc tách giải nghĩa**:
+  - Dữ liệu báo cáo và 11 tệp S0104 đã được đóng gói thành công thành commit mang mã băm ngắn `b5acd5e`. Dữ liệu đã chuyển an toàn từ **Staging Area** vào **Local Repository**.
+
+### 3.2. Thao tác Đổi tên Nhánh & Xóa Nhánh Cũ trên GitHub:
+- **Đầu ra nguyên văn**:
+  ```text
+  To https://github.com/chickenitcode/Skylink.git
+   * [new branch]      feature/giangson/day-01-report -> feature/giangson/day-01-report
+  branch 'feature/giangson/day-01-report' set up to track 'origin/feature/giangson/day-01-report'.
+
+  To https://github.com/chickenitcode/Skylink.git
+   - [deleted]         feature/day-01-report
+  ```
+- **Bóc tách giải nghĩa**:
+  1. `git branch -m`: Nhánh ở máy cá nhân (Local) đổi tên tức thì từ `feature/day-01-report` thành `feature/giangson/day-01-report`.
+  2. `git push -u origin`: Toàn bộ lịch sử commit đã được đồng bộ lên **Remote Repository** trên GitHub và thiết lập tracking.
+  3. `git push origin --delete`: Nhánh cũ không có tên bạn đã bị dọn dẹp khỏi máy chủ GitHub, kho lưu trữ giữ được sự sạch sẽ tuyệt đối.
 
 ---
 
-## 3. KHỐI LỆNH GIT CHUẨN ĐƯỢC CHIA THÀNH 2 BƯỚC CHO BẠN (Xem chi tiết ở phản hồi chat)
+## 4. KẾT LUẬN & TRẠNG THÁI HIỆN TẠI
+- Nhánh làm việc của Giang Sơn trên GitHub: `feature/giangson/day-01-report` đã chứa đầy đủ báo cáo Ngày 1 và 11 tệp S0104.
+- Nhánh `main` sẵn sàng nhận các tệp cấu hình Agent khi bạn muốn commit tiếp.

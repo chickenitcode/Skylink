@@ -28,6 +28,35 @@
   - `[Dòng log output thứ hai]`: `[Giải thích trạng thái: Ví dụ file đang ở Untracked, Staged, hay Modified? Nguyên lý Staging Area là gì?]`
   - `[Dòng log / Cảnh báo / Mã lỗi]`: `[Giải thích nguyên nhân: Nếu có lỗi hoặc trạng thái đặc biệt, tại sao lại xảy ra và cách xử lý ra sao?]`
 
+- **Sơ đồ Trực quan Luồng Trạng Thái Git (Mermaid Flow)**:
+  *(BẮT BUỘC vẽ sơ đồ Mermaid thể hiện vị trí các tệp qua 4 trạm: Working Directory → Staging Area → Local Repo → Remote Repo)*
+  ```mermaid
+  flowchart LR
+      subgraph WD ["1. Working Directory<br/>(Thư mục làm việc)"]
+          direction TB
+          F_WD["Các tệp đang sửa / mới<br/>(Untracked / Modified)"]
+      end
+
+      subgraph SA ["2. Staging Area<br/>(Vùng chuẩn bị commit)"]
+          direction TB
+          F_SA["Các tệp đã gom<br/>(Changes to be committed)"]
+      end
+
+      subgraph LR ["3. Local Repository<br/>(Kho chứa Cục bộ)"]
+          direction TB
+          F_LR["Commit đã lưu<br/>(HEAD trên máy cá nhân)"]
+      end
+
+      subgraph RR ["4. Remote Repository<br/>(Kho chứa Máy chủ GitHub)"]
+          direction TB
+          F_RR["Commit đã đẩy lên<br/>(origin/main, origin/feature...)"]
+      end
+
+      WD -- "git add" --> SA
+      SA -- "git commit" --> LR
+      LR -- "git push" --> RR
+  ```
+
 ---
 
 ## 3. TRẠNG THÁI GIT & TÍNH TOÀN VẸN CÂY LÀM VIỆC (Git & Workspace State Inspection)

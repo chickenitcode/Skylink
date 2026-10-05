@@ -103,6 +103,7 @@ Khi ghi nhận thao tác Git vào `scratch/agent_observations.md`, Agent phải 
 1. **Mã lệnh & Mục đích cờ lệnh**: Giải thích lệnh đó làm gì, từng cờ lệnh (flags như `-s`, `--oneline`, `-n`, `-p`...) có ý nghĩa gì.
 2. **Đầu ra nguyên văn (Raw Output)**: Hiển thị 100% kết quả in ra từ Terminal, không cắt bớt hay giấu lỗi.
 3. **Bóc tách giải nghĩa từng dòng (Line-by-line Breakdown)**: Dịch nghĩa và giải thích bản chất kỹ thuật của từng dòng output bằng ngôn từ sư phạm dễ hiểu (Ví dụ: thế nào là `Untracked files`, `Changes to be committed`, `Working tree clean`, cơ chế hoạt động của Staging Area, Commit Tree...).
+4. **Sơ đồ trực quan Mermaid luồng 4 trạm Git (Bắt buộc trong `.md`)**: Vẽ sơ đồ Mermaid mô tả vị trí và sự di chuyển của các tệp qua 4 trạm: `Working Directory → Staging Area → Local Repository → Remote Repository` để người xem hiểu ngay bản chất lệnh vừa chạy đã chuyển tệp từ đâu đến đâu.
 
 ### 3. Quy chế bảo toàn tệp quan sát trong `scratch/`:
 
