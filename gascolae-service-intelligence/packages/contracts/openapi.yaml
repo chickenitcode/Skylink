@@ -1,0 +1,286 @@
+openapi: 3.0.3
+info:
+  title: GASCOLAE Service Intelligence API
+  description: API Contract for Mobile (Native Android), AI Pipeline, and Backend Gateway.
+  version: 0.1.0
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Local Development Server
+  - url: https://api.gascolae.ctgroupvietnam.com/v1
+    description: Staging Server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # --------------------------------------------------------------------------
+    # COMMON
+    # --------------------------------------------------------------------------
+    ErrorResponse:
+      type: object
+      properties:
+        status_code:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+    # --------------------------------------------------------------------------
+    # AUTH & RBAC
+    # --------------------------------------------------------------------------
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        full_name:
+          type: string
+        role:
+          type: string
+        permissions:
+          type: array
+          items:
+            type: string
+
+    # --------------------------------------------------------------------------
+    # KNOWLEDGE & CATALOG
+    # --------------------------------------------------------------------------
+    Service:
+      type: object
+      properties:
+        service_id:
+          type: string
+        service_name:
+          type: string
+        domain:
+          type: string
+        status:
+          type: string
+          enum: [verified, draft, archived]
+
+    KnowledgeChunk:
+      type: object
+      properties:
+        chunk_id:
+          type: string
+        service_id:
+          type: string
+        record_type:
+          type: string
+        content:
+          type: string
+        source_ids:
+          type: array
+          items:
+            type: string
+
+    # --------------------------------------------------------------------------
+    # CONSULTATION & WORKFLOW
+    # --------------------------------------------------------------------------
+    ConsultationSession:
+      type: object
+      properties:
+        session_id:
+          type: string
+        state:
+          type: string
+          enum: 
+            - DISCOVERY
+            - COLLECTING_REQUIREMENTS
+            - SERVICE_MATCHING
+            - SERVICE_RECOMMENDED
+            - PROPOSAL_READY
+            - GENERATING_PROPOSAL
+            - VALIDATING_PROPOSAL
+            - IN_REVIEW
+            - REVISION_REQUIRED
+            - APPROVED
+            - COMPLETED
+            - CANCELLED
+
+    CustomerRequirement:
+      type: object
+      properties:
+        customer_problem:
+          type: string
+        business_objective:
+          type: string
+        deployment_context:
+          type: string
+        is_complete:
+          type: boolean
+        missing_fields:
+          type: array
+          items:
+            type: string
+
+    # --------------------------------------------------------------------------
+    # PROPOSAL
+    # --------------------------------------------------------------------------
+    Proposal:
+      type: object
+      properties:
+        proposal_id:
+          type: string
+        session_id:
+          type: string
+        status:
+          type: string
+          enum: [DRAFT, REVIEW_REQUIRED, IN_REVIEW, REVISION_REQUESTED, APPROVED, REJECTED]
+        service_package:
+          type: object
+
+security:
+  - bearerAuth: []
+
+paths:
+  # ============================================================================
+  # AUTHENTICATION
+  # ============================================================================
+  /auth/login:
+    post:
+      summary: User login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  refresh_token:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+
+  # ============================================================================
+  # CATALOG & KNOWLEDGE
+  # ============================================================================
+  /services:
+    get:
+      summary: Get service catalog
+      responses:
+        '200':
+          description: List of services
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Service'
+
+  /knowledge/search:
+    post:
+      summary: Hybrid retrieval search
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                search_query:
+                  type: string
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  matched_chunks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/KnowledgeChunk'
+
+  # ============================================================================
+  # CONSULTATION
+  # ============================================================================
+  /consultations:
+    post:
+      summary: Create new consultation session
+      responses:
+        '201':
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultationSession'
+
+  /consultations/{id}/messages:
+    post:
+      summary: Send a message in consultation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+      responses:
+        '200':
+          description: Message processed, state updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  state:
+                    type: string
+                  extracted_requirements:
+                    $ref: '#/components/schemas/CustomerRequirement'
+                  clarification_message:
+                    type: string
+
+  # ============================================================================
+  # PROPOSALS
+  # ============================================================================
+  /consultations/{id}/proposals:
+    post:
+      summary: Generate structured proposal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Proposal draft generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Proposal'

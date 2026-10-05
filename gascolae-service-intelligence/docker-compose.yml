@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: ankane/pgvector:v0.5.1
+    container_name: gascolae_postgres
+    environment:
+      POSTGRES_USER: ${DB_USER:-gascolae_admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-gascolae_secret_2026}
+      POSTGRES_DB: ${DB_NAME:-gascolae_intelligence}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-gascolae_admin} -d ${DB_NAME:-gascolae_intelligence}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # LibreOffice Headless Worker for Document Generation
+  libreoffice:
+    image: lscr.io/linuxserver/libreoffice:latest
+    container_name: gascolae_libreoffice
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Ho_Chi_Minh
+    ports:
+      - "3000:3000" # Exposes web UI if needed, or used for API
+    restart: unless-stopped
+    volumes:
+      - ./temp_docs:/config
+
+volumes:
+  postgres-data:

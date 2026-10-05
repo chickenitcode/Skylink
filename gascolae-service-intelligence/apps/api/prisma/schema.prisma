@@ -1,0 +1,520 @@
+// =============================================================================
+// GASCOLAE Service Intelligence — Prisma Schema
+// Database: PostgreSQL 16 + pgvector
+// =============================================================================
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [pgvector(map: "vector", schema: "public")]
+}
+
+// =============================================================================
+// AUTH & RBAC
+// =============================================================================
+
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  password_hash  String
+  full_name      String
+  department     String?
+  avatar_url     String?
+  is_active      Boolean  @default(true)
+  last_login_at  DateTime?
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  // Relations
+  user_roles          UserRole[]
+  refresh_tokens      RefreshToken[]
+  consultation_sessions ConsultationSession[]
+  proposals_created   Proposal[]    @relation("ProposalCreator")
+  proposal_reviews    ProposalReview[]
+  audit_logs          AuditLog[]
+
+  @@map("users")
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique  // SALES, REVIEWER, ADMIN
+  description String?
+  created_at  DateTime @default(now())
+
+  // Relations
+  user_roles       UserRole[]
+  role_permissions RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  code        String   @unique  // service:read, consultation:create, etc.
+  description String?
+  created_at  DateTime @default(now())
+
+  // Relations
+  role_permissions RolePermission[]
+
+  @@map("permissions")
+}
+
+model UserRole {
+  id         String   @id @default(uuid())
+  user_id    String
+  role_id    String
+  assigned_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, role_id])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  id            String   @id @default(uuid())
+  role_id       String
+  permission_id String
+
+  role       Role       @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permission_id], references: [id], onDelete: Cascade)
+
+  @@unique([role_id, permission_id])
+  @@map("role_permissions")
+}
+
+model RefreshToken {
+  id         String   @id @default(uuid())
+  user_id    String
+  token_hash String   @unique
+  device_id  String?
+  device_name String?
+  platform   String?
+  expires_at DateTime
+  revoked    Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("refresh_tokens")
+}
+
+// =============================================================================
+// CUSTOMER
+// =============================================================================
+
+model Customer {
+  id               String   @id @default(uuid())
+  company_name     String?
+  representative   String?
+  contact_phone    String?
+  contact_email    String?
+  address          String?
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  // Relations
+  consultation_sessions ConsultationSession[]
+
+  @@map("customers")
+}
+
+// =============================================================================
+// SERVICE KNOWLEDGE (Canonical Model)
+// =============================================================================
+
+model Service {
+  id                String   @id  // e.g., S0112
+  service_name      String
+  domain            String   // agriculture, logistics, security, infrastructure
+  overview          String?  @db.Text
+  short_description String?  @db.Text
+  status            String   @default("draft")  // verified, draft, archived
+  version           Int      @default(1)
+  is_mock           Boolean  @default(false)
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  // Relations
+  service_assets  ServiceAsset[]
+  service_records ServiceRecord[]
+  knowledge_chunks KnowledgeChunk[]
+  service_matches  ServiceMatch[]
+  proposal_services ProposalService[]
+
+  @@index([domain])
+  @@index([status])
+  @@map("services")
+}
+
+model ServiceAsset {
+  id           String   @id @default(uuid())
+  service_id   String
+  asset_code   String   // CODE_01, CODE_02, etc.
+  asset_name   String
+  asset_type   String   // TECHNICAL_SPEC, CASE_STUDY, REGULATION, etc.
+  description  String?  @db.Text
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  service Service @relation(fields: [service_id], references: [id], onDelete: Cascade)
+
+  @@unique([service_id, asset_code])
+  @@map("service_assets")
+}
+
+model ServiceRecord {
+  id           String   @id @default(uuid())
+  service_id   String
+  record_type  String   // overview, capability, problem, service_level, deliverable, condition
+  section      String?
+  content      String   @db.Text
+  status       String   @default("draft")  // verified, draft, archived
+  visibility   String   @default("internal")  // public, internal, restricted
+  version      Int      @default(1)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  service Service @relation(fields: [service_id], references: [id], onDelete: Cascade)
+
+  // Relations
+  knowledge_chunks KnowledgeChunk[]
+
+  @@index([service_id, record_type])
+  @@index([status, visibility])
+  @@map("service_records")
+}
+
+model KnowledgeChunk {
+  id           String   @id  // Deterministic: CHK_{SERVICE_ID}_{RECORD_TYPE}_{HASH}
+  service_id   String
+  record_id    String?
+  record_type  String
+  section      String?
+  content      String   @db.Text
+  status       String   @default("draft")
+  visibility   String   @default("internal")
+  version      Int      @default(1)
+  is_mock      Boolean  @default(false)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  service Service       @relation(fields: [service_id], references: [id], onDelete: Cascade)
+  record  ServiceRecord? @relation(fields: [record_id], references: [id], onDelete: SetNull)
+
+  // Relations
+  chunk_embedding    ChunkEmbedding?
+  chunk_sources      ChunkSource[]
+  service_match_evidence ServiceMatchEvidence[]
+  proposal_section_evidence ProposalSectionEvidence[]
+
+  // Full-text search vector (managed by migration)
+  // tsv column added via raw SQL migration
+
+  @@index([service_id])
+  @@index([record_type])
+  @@index([status, visibility])
+  @@map("knowledge_chunks")
+}
+
+model ChunkEmbedding {
+  id            String   @id @default(uuid())
+  chunk_id      String   @unique
+  embedding     Unsupported("vector(768)")
+  model_name    String   @default("text-embedding-004")
+  model_version String?
+  dimensions    Int      @default(768)
+  created_at    DateTime @default(now())
+
+  chunk KnowledgeChunk @relation(fields: [chunk_id], references: [id], onDelete: Cascade)
+
+  @@map("chunk_embeddings")
+}
+
+model Source {
+  id                String   @id  // e.g., SRC_AGRI_SPEC_2026_01
+  title             String
+  document_type     String   // TECHNICAL_SPEC, CASE_STUDY, REGULATION, INTERNAL_REPORT
+  document_url      String?
+  verified_by       String?
+  verification_date DateTime?
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  // Relations
+  chunk_sources ChunkSource[]
+
+  @@map("sources")
+}
+
+model ChunkSource {
+  id         String @id @default(uuid())
+  chunk_id   String
+  source_id  String
+
+  chunk  KnowledgeChunk @relation(fields: [chunk_id], references: [id], onDelete: Cascade)
+  source Source         @relation(fields: [source_id], references: [id], onDelete: Cascade)
+
+  @@unique([chunk_id, source_id])
+  @@map("chunk_sources")
+}
+
+// =============================================================================
+// CONSULTATION & WORKFLOW
+// =============================================================================
+
+model ConsultationSession {
+  id                  String   @id @default(uuid())
+  sales_agent_id      String
+  customer_id         String?
+  customer_title      String?
+  state               String   @default("DISCOVERY")
+  // States: DISCOVERY, COLLECTING_REQUIREMENTS, SERVICE_MATCHING,
+  //         SERVICE_RECOMMENDED, PROPOSAL_READY, GENERATING_PROPOSAL,
+  //         VALIDATING_PROPOSAL, IN_REVIEW, REVISION_REQUIRED,
+  //         APPROVED, COMPLETED, CANCELLED
+  selected_service_id String?
+  can_resume          Boolean  @default(true)
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  // Relations
+  sales_agent        User              @relation(fields: [sales_agent_id], references: [id])
+  customer           Customer?         @relation(fields: [customer_id], references: [id])
+  messages           Message[]
+  customer_requirements CustomerRequirement[]
+  service_matches    ServiceMatch[]
+  proposals          Proposal[]
+
+  @@index([sales_agent_id])
+  @@index([state])
+  @@map("consultation_sessions")
+}
+
+model Message {
+  id           String   @id @default(uuid())
+  session_id   String
+  sender       String   // SALES, AI_ASSISTANT, SYSTEM
+  content      String   @db.Text
+  metadata     Json?    // Additional structured data
+  created_at   DateTime @default(now())
+
+  session ConsultationSession @relation(fields: [session_id], references: [id], onDelete: Cascade)
+
+  @@index([session_id])
+  @@map("messages")
+}
+
+model CustomerRequirement {
+  id               String   @id @default(uuid())
+  session_id       String
+  customer_problem String?  @db.Text
+  business_objective String? @db.Text
+  deployment_context String? @db.Text
+  constraints      Json?    // { timeline, budget_estimated, technical_limitations[] }
+  required_deliverables String[] @default([])
+  is_complete      Boolean  @default(false)
+  missing_fields   String[] @default([])
+  version          Int      @default(1)
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  session ConsultationSession @relation(fields: [session_id], references: [id], onDelete: Cascade)
+
+  @@index([session_id])
+  @@map("customer_requirements")
+}
+
+// =============================================================================
+// SERVICE MATCHING
+// =============================================================================
+
+model ServiceMatch {
+  id                      String   @id @default(uuid())
+  session_id              String
+  service_id              String
+  suitability_score       Float?
+  rationale               String?  @db.Text
+  unsupported_requirements String[] @default([])
+  commercial_warnings     String[] @default([])
+  is_selected             Boolean  @default(false)
+  created_at              DateTime @default(now())
+
+  session ConsultationSession @relation(fields: [session_id], references: [id], onDelete: Cascade)
+  service Service             @relation(fields: [service_id], references: [id])
+
+  // Relations
+  evidence ServiceMatchEvidence[]
+
+  @@index([session_id])
+  @@map("service_matches")
+}
+
+model ServiceMatchEvidence {
+  id         String @id @default(uuid())
+  match_id   String
+  chunk_id   String
+
+  match ServiceMatch    @relation(fields: [match_id], references: [id], onDelete: Cascade)
+  chunk KnowledgeChunk  @relation(fields: [chunk_id], references: [id])
+
+  @@unique([match_id, chunk_id])
+  @@map("service_match_evidence")
+}
+
+// =============================================================================
+// PROPOSAL
+// =============================================================================
+
+model Proposal {
+  id                String   @id  // e.g., PROP_2026_S0112_0089
+  session_id        String
+  created_by        String
+  status            String   @default("DRAFT")
+  // Statuses: DRAFT, REVIEW_REQUIRED, IN_REVIEW, REVISION_REQUESTED, APPROVED, REJECTED
+  customer_info     Json?    // { company_name, representative, contact_phone, address }
+  scope_summary     String?  @db.Text
+  items_to_confirm  Json?    // Unverified items that need human confirmation
+  version           Int      @default(1)
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  session ConsultationSession @relation(fields: [session_id], references: [id])
+  creator User                @relation("ProposalCreator", fields: [created_by], references: [id])
+
+  // Relations
+  proposal_services  ProposalService[]
+  proposal_sections  ProposalSection[]
+  proposal_validations ProposalValidation[]
+  proposal_reviews   ProposalReview[]
+  proposal_documents ProposalDocument[]
+
+  @@index([session_id])
+  @@index([status])
+  @@map("proposals")
+}
+
+model ProposalService {
+  id                   String   @id @default(uuid())
+  proposal_id          String
+  service_id           String
+  service_level_code   String?
+  deliverables         String[] @default([])
+  deployment_conditions String[] @default([])
+
+  proposal Proposal @relation(fields: [proposal_id], references: [id], onDelete: Cascade)
+  service  Service  @relation(fields: [service_id], references: [id])
+
+  @@map("proposal_services")
+}
+
+model ProposalSection {
+  id           String   @id @default(uuid())
+  proposal_id  String
+  section_type String   // executive_summary, scope, deliverables, conditions, assumptions
+  title        String
+  content      String   @db.Text
+  order_index  Int      @default(0)
+  created_at   DateTime @default(now())
+
+  proposal Proposal @relation(fields: [proposal_id], references: [id], onDelete: Cascade)
+
+  // Relations
+  evidence ProposalSectionEvidence[]
+
+  @@index([proposal_id])
+  @@map("proposal_sections")
+}
+
+model ProposalSectionEvidence {
+  id         String @id @default(uuid())
+  section_id String
+  chunk_id   String
+  claim      String? @db.Text
+
+  section ProposalSection @relation(fields: [section_id], references: [id], onDelete: Cascade)
+  chunk   KnowledgeChunk  @relation(fields: [chunk_id], references: [id])
+
+  @@unique([section_id, chunk_id])
+  @@map("proposal_section_evidence")
+}
+
+model ProposalValidation {
+  id             String   @id @default(uuid())
+  proposal_id    String
+  is_valid       Boolean
+  validation_errors Json?  // Array of validation error details
+  guardrail_audit   Json?  // Pre/Post check results
+  validated_at   DateTime @default(now())
+
+  proposal Proposal @relation(fields: [proposal_id], references: [id], onDelete: Cascade)
+
+  @@index([proposal_id])
+  @@map("proposal_validations")
+}
+
+model ProposalReview {
+  id           String   @id @default(uuid())
+  proposal_id  String
+  reviewer_id  String
+  action       String   // APPROVE, REQUEST_CHANGES, REJECT
+  review_notes String?  @db.Text
+  created_at   DateTime @default(now())
+
+  proposal Proposal @relation(fields: [proposal_id], references: [id], onDelete: Cascade)
+  reviewer User     @relation(fields: [reviewer_id], references: [id])
+
+  @@index([proposal_id])
+  @@map("proposal_reviews")
+}
+
+model ProposalDocument {
+  id             String   @id @default(uuid())
+  proposal_id    String
+  document_type  String   // DOCX, PDF
+  file_path      String
+  file_size_bytes Int?
+  sha256_checksum String?
+  version        Int      @default(1)
+  created_at     DateTime @default(now())
+
+  proposal Proposal @relation(fields: [proposal_id], references: [id], onDelete: Cascade)
+
+  @@index([proposal_id])
+  @@map("proposal_documents")
+}
+
+// =============================================================================
+// AUDIT LOG
+// =============================================================================
+
+model AuditLog {
+  id           String   @id @default(uuid())
+  event_type   String   // STATE_TRANSITION, RETRIEVAL_TRACE, GUARDRAIL_VIOLATION, PROPOSAL_EVENT
+  session_id   String?
+  proposal_id  String?
+  actor_id     String?
+  actor_role   String?
+  action       String?
+  severity     String?  // INFO, WARNING, ERROR
+  payload      Json?
+  ip_address   String?
+  created_at   DateTime @default(now())
+
+  actor User? @relation(fields: [actor_id], references: [id])
+
+  @@index([event_type])
+  @@index([session_id])
+  @@index([actor_id])
+  @@index([created_at])
+  @@map("audit_logs")
+}
