@@ -56,6 +56,7 @@ Không gian làm việc đã được thiết lập hệ sinh thái tùy biến 
 2. **[security_data_sanitization.md](./rules/security_data_sanitization.md)**: Chống rò rỉ dữ liệu `restricted`, ẩn điểm vector thô.
 3. **[proposal_legal_compliance.md](./rules/proposal_legal_compliance.md)**: Điều khoản miễn trừ pháp lý bắt buộc & cách ly số liệu chưa kiểm chứng vào `items_to_confirm`.
 4. **[git_mutation_guardrail.md](./rules/git_mutation_guardrail.md)**: Cấm Agent tự ý chạy các lệnh biến đổi Git/GitHub (`add`, `commit`, `push`...). Mọi thao tác ghi Git phải đưa ra khung chat để Người Dùng tự tay thực hiện.
+5. **[mermaid_output_discipline.md](./rules/mermaid_output_discipline.md)**: Cấm vẽ Mermaid trực tiếp trong khung chat phản hồi (chỉ vẽ khi ghi vào tệp tài liệu Markdown `.md`).
 
 ---
 
