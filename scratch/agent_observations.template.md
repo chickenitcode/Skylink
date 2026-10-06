@@ -28,6 +28,18 @@
   - `[Dòng log output thứ hai]`: `[Giải thích trạng thái: Ví dụ file đang ở Untracked, Staged, hay Modified? Nguyên lý Staging Area là gì?]`
   - `[Dòng log / Cảnh báo / Mã lỗi]`: `[Giải thích nguyên nhân: Nếu có lỗi hoặc trạng thái đặc biệt, tại sao lại xảy ra và cách xử lý ra sao?]`
 
+- **Sơ đồ Trực quan Trạng thái Git theo Ngữ Cảnh (Mermaid Diagram - Đa dạng & Linh hoạt)**:
+  *(KHÔNG VẼ CỨNG NHẮC: Tùy thuộc vào lệnh Git vừa thực hiện mà chọn loại sơ đồ trực quan phù hợp nhất)*
+  
+  * **Trường hợp A - Thao tác Nhánh (Branch / Rename / Checkout / Merge / Delete Remote)**:
+    - *Khuyến nghị*: Dùng `gitGraph` hoặc `flowchart` cấu trúc nhánh để thể hiện topology phân nhánh, vị trí con trỏ `HEAD`, nhánh cục bộ (local) so với nhánh máy chủ (`origin/*`).
+  * **Trường hợp B - Thao tác Vòng đời Tệp & Kiểm tra Trạng thái (`git status`, `git diff`)**:
+    - *Khuyến nghị*: Dùng `stateDiagram-v2` mô tả vòng đời tệp (`Untracked` ➔ `Staged` ➔ `Committed` ➔ `Modified`) hoặc ma trận trạng thái.
+  * **Trường hợp C - Thao tác Đóng gói & Đẩy mã nguồn (`git add`, `git commit`, `git push`)**:
+    - *Khuyến nghị*: Dùng `flowchart LR` 4 trạm dữ liệu (`Working Directory` ➔ `Staging Area` ➔ `Local Repository` ➔ `Remote Repository`) để làm rõ vị trí tệp đang nằm ở đâu.
+  * **Trường hợp D - Thao tác Hoàn tác / Tạm cất (`git stash`, `git reset`, `git revert`)**:
+    - *Khuyến nghị*: Dùng sơ đồ ngăn xếp (Stack) hoặc sơ đồ dịch chuyển con trỏ commit để trực quan hóa việc thu hồi hay áp dụng thay đổi.
+
 ---
 
 ## 3. TRẠNG THÁI GIT & TÍNH TOÀN VẸN CÂY LÀM VIỆC (Git & Workspace State Inspection)
