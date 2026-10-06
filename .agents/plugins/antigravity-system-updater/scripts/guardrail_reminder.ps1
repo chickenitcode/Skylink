@@ -24,6 +24,9 @@ $reminderText = @'
 6. KỶ LUẬT GIT CHỈ-ĐỌC (READ-ONLY GIT POLICY):
    - CẤM TUYỆT ĐỐI tự ý chạy các lệnh biến đổi Git (git add, git commit, git push, git reset...).
    - Mọi thao tác commit/push BẮT BUỘC phải đưa ra khung chat dưới dạng khối lệnh để Người Dùng tự kiểm tra và tự tay thực thi.
+7. KỶ LUẬT REVIEW CODE, WORKFLOW & LATENCY (scratch/):
+   - Mỗi lần Agent tạo mới hoặc chỉnh sửa mã nguồn xong, BẮT BUỘC lập file báo cáo Markdown vào scratch/ (theo scratch/code_review_report.template.md).
+   - Báo cáo phải có đủ 3 phần: Review Report Card 5 tiêu chí, Sơ đồ Workflow Mermaid, và Phân tích Latency (ms) thực tế.
 '@
 
 $payload = @{

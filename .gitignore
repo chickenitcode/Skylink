@@ -144,14 +144,16 @@ Icon?
 # ------------------------------------------------------------------------------
 # 9. KỶ LUẬT SCRATCHPAD (SCRATCH DIRECTORY DISCIPLINE)
 # ------------------------------------------------------------------------------
-# Bỏ qua các tệp script kiểm tra tạm thời, file rác sinh ra trong scratch/
+# Bỏ qua các tệp script kiểm tra tạm thời, file rác và nhật ký động trong scratch/
 scratch/*.ps1
 scratch/*.sh
 scratch/*.py
 scratch/*.tmp
 scratch/*.json
+scratch/agent_observations.md
+scratch/code_review_report.md
 
-# BẢO TỒN CÁC TỆP QUAN SÁT & TÀI LIỆU CHUẨN TRONG SCRATCH
+# BẢO TỒN CÁC TỆP MẪU CHUẨN & README TRONG SCRATCH
 !scratch/README.md
-!scratch/agent_observations.md
 !scratch/agent_observations.template.md
+!scratch/code_review_report.template.md
